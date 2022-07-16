@@ -1,0 +1,13 @@
+def is_base_case(n, arg):
+    return n == 1
+def divide(n, arg):
+    return arg[0:n//2], arg[n//2:n]
+def combine(n, *args):
+    # create shortcut variables to make user code shorter
+    if n > 0: arg0 = args[0]
+    if n > 1: arg1 = args[1]
+    if n > 2: arg2 = args[2]
+    if n > 3: arg3 = args[3]
+    if n > 4: arg4 = args[4]
+    if n > 5: arg5 = args[5]
+    return arg0 + arg1
