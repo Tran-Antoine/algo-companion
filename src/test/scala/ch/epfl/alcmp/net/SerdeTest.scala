@@ -17,4 +17,9 @@ class SerdeTest extends AnyFlatSpec with should.Matchers {
       Serde.NUMBER.deserialize(Serde.NUMBER.serialize(r)) should be (r)
     }
   }
+
+  "Deserializing a serialized text" should "give back the original text" in {
+    val text = "Hello, World!"
+    Serde.TEXT.deserialize(Serde.TEXT.serialize(text)) should be (text)
+  }
 }
