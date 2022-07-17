@@ -6,7 +6,7 @@ class Matrix:
     This data structure is immutable.
     """
     def __init__(self, lines=[]):
-        self.lines = lines
+        self.lines = list(lines)
         self.n_rows = len(lines)
         self.n_columns = 0 if self.n_rows == 0 else len(lines[0])
         
