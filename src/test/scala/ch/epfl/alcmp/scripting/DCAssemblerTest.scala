@@ -1,6 +1,5 @@
 package ch.epfl.alcmp.scripting
 
-import ch.epfl.alcmp.scripting.DCAssembler.{assemble, getClass}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.*
 import matchers.*
