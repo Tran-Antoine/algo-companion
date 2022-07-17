@@ -117,6 +117,83 @@ class MatrixTest(unittest.TestCase):
         
         self.assertEqual(m1.split_h(3), expected)
 
+    def test_matrix_vh_slicing_works(self):
+    
+        m1 = Matrix([[1, 2, 3, 4, 5],
+                     [6, 7, 8, 9, 0],
+                     [7, 6, 5, 4, 3]])
+                     
+        expected = ((8, 9), 
+                    (5, 4)) 
+                     
+        self.assertEqual(m1.slice_vh(1, 3, 2, 4).as_tuple(), expected)
+
+    def test_matrix_vh_splitting_works(self):
+    
+        m1 = Matrix([[1, 2, 3, 4, 2],
+                     [6, 7, 8, 9, 1],
+                     [7, 6, 5, 4, 3],
+                     [3, 2, 8, 7, 9],
+                     [1, 8, 9, 3, 5]])
+                     
+        expected1 = (
+        
+            (Matrix([[1, 2], 
+                     [6, 7]]),
+                    
+            Matrix([[3, 4], 
+                    [8, 9]]),
+                    
+            Matrix([[2], 
+                    [1]])),
+                    
+            (Matrix([[7, 6], 
+                     [3, 2]]),
+                    
+            Matrix([[5, 4], 
+                    [8, 7]]),
+                    
+            Matrix([[3], 
+                    [9]])),
+                    
+            (Matrix([[1, 8]]),
+                    
+            Matrix([[9, 3]]),
+                    
+            Matrix([[5]]))        
+
+        )
+        
+        expected2 = (
+        
+            Matrix([[1, 2], 
+                     [6, 7]]),
+                    
+            Matrix([[3, 4], 
+                    [8, 9]]),
+                    
+            Matrix([[2], 
+                    [1]]),
+                    
+            Matrix([[7, 6], 
+                     [3, 2]]),
+                    
+            Matrix([[5, 4], 
+                    [8, 7]]),
+                    
+            Matrix([[3], 
+                    [9]]),
+                    
+            Matrix([[1, 8]]),
+                    
+            Matrix([[9, 3]]),
+                    
+            Matrix([[5]])        
+
+        )
+        
+        self.assertEqual(m1.split_vh(3, 3), expected1)
+        self.assertEqual(m1.split_vh_flat(3, 3), expected2)
         
 if __name__ == '__main__':
     unittest.main()
