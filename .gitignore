@@ -32,3 +32,9 @@ target/
 .scala_dependencies
 .cache-main
 *.class
+
+# python
+
+src/main/python/__pycache__
+src/test/python/__pycache__
+
