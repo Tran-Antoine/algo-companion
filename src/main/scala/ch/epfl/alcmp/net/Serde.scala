@@ -2,6 +2,7 @@ package ch.epfl.alcmp.net
 
 import ch.epfl.alcmp.data.InputType
 import ch.epfl.alcmp.data.InputType.{IBinaryTree, IHeap, IList, IMatrix}
+import ch.epfl.alcmp.net.SimulationMessage.DivideMessage
 
 import java.nio.charset.StandardCharsets
 import java.util.Base64
