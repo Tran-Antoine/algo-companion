@@ -48,6 +48,19 @@ class Matrix:
             output.append(slice_portion)
             
         return tuple(output)
+    
+    def slice_vh(self, start_row, end_row, start_column, end_column, step_row=1, step_column=1):
+        return self.slice_h(start_row, end_row, step_row).slice_v(start_column, end_column, step_column)
+    
+    def split_vh(self, n, m):
+        return tuple(mat.split_v(m) for mat in self.split_h(n))
+        
+    def split_vh_flat(self, n, m):
+        result = ()
+        for line in self.split_vh(n, m):
+            result += line
+            
+        return result
         
     def __str__(self):
         return self.as_tuple().__str__()
