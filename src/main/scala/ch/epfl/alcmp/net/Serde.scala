@@ -25,10 +25,28 @@ object Serde {
     override def deserialize(data: String): String = new String(Base64.getDecoder.decode(data), StandardCharsets.UTF_8)
   }
 
-  val REGISTER_MESSAGE: Serde[RegisterMessage] = ???
+  val REGISTER_MESSAGE: Serde[RegisterMessage] = new Serde[RegisterMessage] {
+    override def serialize(obj: RegisterMessage): String = ???
+    override def deserialize(data: String): RegisterMessage = ???
+  }
 
-  val DIVIDE_LIST_MESSAGE: Serde[DivideMessage[IList]] = ???
-  val DIVIDE_MATRIX_MESSAGE: Serde[DivideMessage[IMatrix]] = ???
-  val DIVIDE_HEAP_MESSAGE: Serde[DivideMessage[IHeap]] = ???
-  val DIVIDE_BINARY_TREE_MESSAGE: Serde[DivideMessage[IBinaryTree]] = ???
+  val DIVIDE_LIST_MESSAGE: Serde[DivideMessage[IList]] = new Serde[DivideMessage[IList]] {
+    override def serialize(obj: DivideMessage[IList]): String = ???
+    override def deserialize(data: String): DivideMessage[IList] = ???
+  }
+
+  val DIVIDE_MATRIX_MESSAGE: Serde[DivideMessage[IMatrix]] = new Serde[DivideMessage[IMatrix]] {
+    override def serialize(obj: DivideMessage[IMatrix]): String = ???
+    override def deserialize(data: String): DivideMessage[IMatrix] = ???
+  }
+
+  val DIVIDE_HEAP_MESSAGE: Serde[DivideMessage[IHeap]] = new Serde[DivideMessage[IHeap]] {
+    override def serialize(obj: DivideMessage[IHeap]): String = ???
+    override def deserialize(data: String): DivideMessage[IHeap] = ???
+  }
+
+  val DIVIDE_BINARY_TREE_MESSAGE: Serde[DivideMessage[IBinaryTree]] = new Serde[DivideMessage[IBinaryTree]] {
+    override def serialize(obj: DivideMessage[IBinaryTree]): String = ???
+    override def deserialize(data: String): DivideMessage[IBinaryTree] = ???
+  }
 }
