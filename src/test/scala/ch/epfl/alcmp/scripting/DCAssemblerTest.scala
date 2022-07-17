@@ -21,7 +21,7 @@ class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
     insertion should be (expected)
   }
 
-  "Assembly of python script" should "be the correct script" in {
+  "Assembly of user functions" should "be correct" in {
 
     val assembly = DCAssembler.assembleUserFunctions("return n == 1", "return arg[0:n//2], arg[n//2:n]", "return arg0 + arg1")
     val expected = read("assembly_example.txt")
