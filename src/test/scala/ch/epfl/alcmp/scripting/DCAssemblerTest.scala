@@ -26,6 +26,9 @@ class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
     val assembly = DCAssembler.assembleUserFunctions("return n == 1", "return arg[0:n//2], arg[n//2:n]", "return arg0 + arg1")
     val expected = read("assembly_example.txt")
 
+    println(assembly)
+    println("-----")
+    println(expected)
     assembly should be (expected)
   }*/
 
