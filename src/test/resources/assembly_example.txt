@@ -1,4 +1,4 @@
-def is_base_case(n, arg):
+def base_case(n, arg):
     return n == 1
 def divide(n, arg):
     return arg[0:n//2], arg[n//2:n]
