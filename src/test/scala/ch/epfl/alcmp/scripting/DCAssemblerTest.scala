@@ -27,7 +27,7 @@ class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
     val expected = read("assembly_example.txt")
 
     assembly should be (expected)
-  }*/ 
+  }*/
 
   private def read(name: String): String = Source.fromInputStream(new FileInputStream("src/test/resources/" + name)).mkString
 }
