@@ -1,1 +1,1 @@
-def is_base_case(n, arg):
+def base_case(n, arg):
