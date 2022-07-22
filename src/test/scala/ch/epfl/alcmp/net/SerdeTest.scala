@@ -1,5 +1,6 @@
 package ch.epfl.alcmp.net
 
+import ch.epfl.alcmp.net.SimulationMessage.RegisterMessage
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 
@@ -21,5 +22,11 @@ class SerdeTest extends AnyFlatSpec with should.Matchers {
   "Deserializing a serialized text" should "give back the original text" in {
     val text = "Hello, World!"
     Serdes.deserialize[String](Serdes.serialize[String](text)) should be (text)
+  }
+
+  "Serializing and Deserializing REGISTER messages" should "work" in {
+    val reg1 = new RegisterMessage(57)
+    Serdes.serialize[RegisterMessage](reg1) should be ("57")
+    Serdes.deserialize[RegisterMessage]("68") should be (new RegisterMessage(68))
   }
 }
