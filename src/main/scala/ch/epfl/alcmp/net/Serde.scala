@@ -24,12 +24,12 @@ object Serde {
 
   given Serde[RegisterMessage] with
     override def serialize(obj: RegisterMessage): String = Serdes.serialize[Int](obj.id)
-    override def deserialize(data: String): RegisterMessage = new RegisterMessage(Serdes.deserialize[Int](data))
+    override def deserialize(data: String): RegisterMessage = RegisterMessage(Serdes.deserialize[Int](data))
 
 
   given Serde[DoneMessage] with
     override def serialize(obj: DoneMessage): String = Serdes.serialize[Int](obj.id)
-    override def deserialize(data: String): DoneMessage = new DoneMessage(Serdes.deserialize[Int](data))
+    override def deserialize(data: String): DoneMessage = DoneMessage(Serdes.deserialize[Int](data))
 
   given (TypeId => Serde[DivideMessage]) with
     override def apply(t: TypeId): Serde[DivideMessage] = new Serde[DivideMessage]:
