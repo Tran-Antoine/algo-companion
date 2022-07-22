@@ -23,8 +23,8 @@ object Serde {
     override def deserialize(data: String): String = new String(Base64.getDecoder.decode(data), StandardCharsets.UTF_8)
 
   given Serde[RegisterMessage] with
-    override def serialize(obj: RegisterMessage): String = ???
-    override def deserialize(data: String): RegisterMessage = ???
+    override def serialize(obj: RegisterMessage): String = Serdes.serialize[Int](obj.id)
+    override def deserialize(data: String): RegisterMessage = new RegisterMessage(Serdes.deserialize[Int](data))
 
 
   given Serde[DoneMessage] with
