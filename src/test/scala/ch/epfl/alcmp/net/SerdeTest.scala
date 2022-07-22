@@ -27,12 +27,12 @@ class SerdeTest extends AnyFlatSpec with should.Matchers {
   "Serializing and Deserializing REGISTER messages" should "work" in {
     val reg1 = new RegisterMessage(57)
     Serdes.serialize[RegisterMessage](reg1) should be ("57")
-    Serdes.deserialize[RegisterMessage]("68") should be (new RegisterMessage(68))
+    Serdes.deserialize[RegisterMessage]("68") should be (RegisterMessage(68))
   }
 
   "Serializing and Deserializing DONE messages" should "work" in {
     val reg1 = new DoneMessage(57456)
     Serdes.serialize[DoneMessage](reg1) should be ("57456")
-    Serdes.deserialize[DoneMessage]("68") should be (new DoneMessage(68))
+    Serdes.deserialize[DoneMessage]("68") should be (DoneMessage(68))
   }
 }
