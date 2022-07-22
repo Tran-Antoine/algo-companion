@@ -1,6 +1,6 @@
 package ch.epfl.alcmp.net
 
-import ch.epfl.alcmp.net.SimulationMessage.RegisterMessage
+import ch.epfl.alcmp.net.SimulationMessage.{CombineMessage, DivideMessage, DoneMessage, RegisterMessage}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 
@@ -28,5 +28,11 @@ class SerdeTest extends AnyFlatSpec with should.Matchers {
     val reg1 = new RegisterMessage(57)
     Serdes.serialize[RegisterMessage](reg1) should be ("57")
     Serdes.deserialize[RegisterMessage]("68") should be (new RegisterMessage(68))
+  }
+
+  "Serializing and Deserializing DONE messages" should "work" in {
+    val reg1 = new DoneMessage(57456)
+    Serdes.serialize[DoneMessage](reg1) should be ("57456")
+    Serdes.deserialize[DoneMessage]("68") should be (new DoneMessage(68))
   }
 }
