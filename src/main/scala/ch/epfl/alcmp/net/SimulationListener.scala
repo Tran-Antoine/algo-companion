@@ -17,6 +17,7 @@ class SimulationListener(private val socket: Socket, private val typeId: TypeId)
   type SimulationId = Int
 
   private var ongoingSimulations: Map[SimulationId, SimulationData] = Map.empty
+  private var finishedSimulations: List[SimulationData] = Nil
 
   val reader: BufferedReader =
     val inputStream = socket.getInputStream
@@ -31,7 +32,7 @@ class SimulationListener(private val socket: Socket, private val typeId: TypeId)
       case MessageId.COMBINE  => handleCombine(Serdes.deserialize[CombineMessage](typeId, content))
       case MessageId.DIVIDE   => handleDivide(Serdes.deserialize[DivideMessage](typeId, content))
     }
-  
+
   def run(): Future[List[SimulationData]] = Future {
     handleOne()
   }
@@ -41,6 +42,7 @@ class SimulationListener(private val socket: Socket, private val typeId: TypeId)
     handleOne()
 
   def handleDone(message: DoneMessage): List[SimulationData] =
+    finishedSimulations = ongoingSimulations(message.id) :: finishedSimulations
     ongoingSimulations -= message.id
     if ongoingSimulations.isEmpty then finish else handleOne()
 
@@ -52,5 +54,5 @@ class SimulationListener(private val socket: Socket, private val typeId: TypeId)
     ongoingSimulations(message.id).addCombineData(message)
     handleOne()
 
-  def finish: List[SimulationData] = ongoingSimulations.toList.sorted((a, b) => a._1 - b._1).map(_._2)
+  def finish: List[SimulationData] = finishedSimulations
 }
