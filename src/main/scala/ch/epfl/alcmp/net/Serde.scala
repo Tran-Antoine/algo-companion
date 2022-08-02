@@ -22,6 +22,9 @@ object Serde {
     override def serialize(obj: String): String = Base64.getEncoder.encodeToString(obj.getBytes(StandardCharsets.UTF_8))
     override def deserialize(data: String): String = new String(Base64.getDecoder.decode(data), StandardCharsets.UTF_8)
 
+  //given Serde[List[]] with
+
+
   given Serde[RegisterMessage] with
     override def serialize(obj: RegisterMessage): String = Serdes.serialize[Int](obj.id)
     override def deserialize(data: String): RegisterMessage = RegisterMessage(Serdes.deserialize[Int](data))
@@ -47,13 +50,19 @@ object Serde {
   given (TypeId => Serde[CombineMessage]) with
     override def apply(t: TypeId): Serde[CombineMessage] = new Serde[CombineMessage]:
       override def serialize(obj: CombineMessage): String = obj.output match {
-        case IList(list) => ???
+        //TODO change
+        case IList(list) => String.valueOf(obj.id) + '/' + String.valueOf(obj.depth) + '/' +
+          String.valueOf(obj.index) + '/' + list.mkString(",") + '/' + obj.highlights.mkString(",")
         case IMatrix(rows) => ???
         case IHeap(list) => ???
         case IBinaryTree(root) => ???
       }
       override def deserialize(data: String): CombineMessage = t match
-        case TypeId.ListType => ???
+        case TypeId.ListType =>
+          val arr = data.split("/")
+          val ilist = arr(3).split(",").map(s => s.toInt)
+          val highlights = arr(4).split(",").map(s => s.toInt)
+          CombineMessage(arr(0).toInt, arr(1).toInt, arr(2).toInt, IList(ilist.toList), highlights.toList)
         case TypeId.MatrixType => ???
         case TypeId.HeapType => ???
         case TypeId.BinaryTreeType => ???
