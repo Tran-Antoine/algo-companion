@@ -14,7 +14,7 @@ import scala.util.{Failure, Success}
 
 class SimulationListenerTest extends AsyncFlatSpec with should.Matchers {
 
-  "Simple Register + Done" should "terminate and give a single result" ignore {
+  "Simple Register + Done" should "terminate and give a single result" in {
 
     val server = ServerSocket(5108)
 
