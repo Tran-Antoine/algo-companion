@@ -3,12 +3,14 @@ package ch.epfl.alcmp.net
 
 import ch.epfl.alcmp.data.{InputType, SimulationData, TypeId}
 import ch.epfl.alcmp.net.SimulationMessage.{CombineMessage, DivideMessage, DoneMessage, RegisterMessage}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.Socket
 import java.nio.charset.StandardCharsets
 import java.util.regex.Pattern
 import scala.collection.mutable
+import scala.concurrent.Future
 
 class SimulationListener(private val socket: Socket, private val typeId: TypeId) {
 
@@ -16,11 +18,11 @@ class SimulationListener(private val socket: Socket, private val typeId: TypeId)
 
   private var ongoingSimulations: Map[SimulationId, SimulationData] = Map.empty
 
-  given BufferedReader =
+  val reader: BufferedReader =
     val inputStream = socket.getInputStream
     new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.US_ASCII))
 
-  def handleOne(using reader: BufferedReader): List[SimulationData] =
+  def handleOne(): List[SimulationData] =
     val args = reader.readLine().split(Pattern.quote(" "), -1)
     val content = args(1)
     MessageId.valueOf(args(0)) match {
@@ -29,25 +31,26 @@ class SimulationListener(private val socket: Socket, private val typeId: TypeId)
       case MessageId.COMBINE  => handleCombine(Serdes.deserialize[CombineMessage](typeId, content))
       case MessageId.DIVIDE   => handleDivide(Serdes.deserialize[DivideMessage](typeId, content))
     }
-
-  def run(): List[SimulationData] =
-    handleOne
+  
+  def run(): Future[List[SimulationData]] = Future {
+    handleOne()
+  }
 
   def handleRegister(message: RegisterMessage): List[SimulationData] =
     ongoingSimulations += (message.id, new SimulationData)
-    handleOne
+    handleOne()
 
   def handleDone(message: DoneMessage): List[SimulationData] =
     ongoingSimulations -= message.id
-    if ongoingSimulations.isEmpty then finish else handleOne
+    if ongoingSimulations.isEmpty then finish else handleOne()
 
   def handleDivide(message: DivideMessage): List[SimulationData] =
     ongoingSimulations(message.id).addDivisionData(message)
-    handleOne
+    handleOne()
 
   def handleCombine(message: CombineMessage): List[SimulationData] =
     ongoingSimulations(message.id).addCombineData(message)
-    handleOne
+    handleOne()
 
   def finish: List[SimulationData] = ongoingSimulations.toList.sorted((a, b) => a._1 - b._1).map(_._2)
 }
