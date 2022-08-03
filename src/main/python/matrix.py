@@ -70,3 +70,6 @@ class Matrix:
         
     def __eq__(self, other):
         return self.as_tuple() == other.as_tuple()
+        
+    def __len__(self):
+        return self.n_rows * self.n_columns
