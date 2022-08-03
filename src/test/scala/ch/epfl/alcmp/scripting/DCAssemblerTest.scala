@@ -4,7 +4,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.*
 import matchers.*
 
-import java.io.{FileInputStream, FileOutputStream, FileWriter, InputStream}
+import java.io.{BufferedReader, BufferedWriter, FileInputStream, FileOutputStream, FileWriter, InputStream, InputStreamReader}
 import scala.io.Source
 
 class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
@@ -21,16 +21,26 @@ class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
     insertion should be (expected)
   }
 
-  /*"Assembly of user functions" should "be correct" in {
+  "Assembly of simple program" should "retrieve the correct output" ignore {
 
-    val assembly = DCAssembler.assembleUserFunctions("return n == 1", "return arg[0:n//2], arg[n//2:n]", "return arg0 + arg1")
-    val expected = read("assembly_example.txt")
+    val input = "(5,8,3,7,10,23,16,2)"
+    val divide = "return arg[:n//2], arg[n//2:]"
+    val combine = "[arg0[0]] if arg0[0] > arg1[0] else [arg1[1]]"
+    val base = "if n == 1: return arg0"
 
-    println(assembly)
-    println("-----")
-    println(expected)
-    assembly should be (expected)
-  }*/
+    val script = DCAssembler.assemble(base, divide, combine)
+
+    val process = ProcessBuilder("py", "src/test/python/dc_template_test.py", input, script).start()
+    val reader = new BufferedReader(new InputStreamReader(process.getInputStream))
+
+    val output = reader.readLine()
+
+    process.waitFor()
+    process.destroy()
+
+    output should be ("23")
+
+  }
 
   private def read(name: String): String = Source.fromInputStream(new FileInputStream("src/test/resources/" + name)).mkString
 }
