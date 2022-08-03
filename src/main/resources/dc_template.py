@@ -1,4 +1,4 @@
-def run(arg):
+def run(arg, socket, div_ser, comb_ser, input_serde, input_id, depth=0):
     """
     Runs a generic Divide and Conquer algorithm using external functions defined by the user.
     The run function assumes existence of the following functions:
@@ -6,11 +6,39 @@ def run(arg):
     - divide(n, arg)
     - combine(n, arg)
     """
-    n = len(arg)
-    if (out := base_case(n, arg)):
-        return out
+    if depth == 0:
+        run.maxIndices = {0: 0} # reset dictionary
+        socket.send(f"REGISTER {input_id}")
         
-    division_outputs = divide(n, arg)
-    solved_subdivisions = [run(sub_arg) for sub_arg in division_outputs]
+    n = len(arg)
     
-    return combine(n, *solved_subdivisions)
+    if not depth in run.maxIndices:
+        run.maxIndices(depth) = 0
+        
+        
+    current_index = run.maxIndices(depth)
+
+    run.maxIndices(depth) += 1 # in all cases we have at least one result
+    
+    if not (out := base_case(n, arg)):
+    
+
+        division_outputs = divide(n, arg)
+        
+        socket.send(f"DIVIDE {div_ser.serialize((input_id, depth, current_index, division_outputs), input_serde)}")
+        
+        solved_subdivisions = [run(sub_arg, socket, div_ser, comb_ser, input_id, depth + 1, current_index + i) 
+                               for (i, sub_arg) in enumerate(division_outputs)]
+        
+        out = combine(n, *solved_subdivisions)
+        
+        run.maxIndices(depth) += len(division_outputs) - 1
+    
+    
+    socket.send(f"COMBINE {comb_ser.serialize((input_id, depth, index, out), input_serde)}")
+    
+    if depth == 0:
+        socket.send(f"DONE {input_id}")
+        
+    return out
+    

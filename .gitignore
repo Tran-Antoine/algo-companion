@@ -38,3 +38,5 @@ target/
 src/main/python/__pycache__
 src/test/python/__pycache__
 
+# temp files
+bin
