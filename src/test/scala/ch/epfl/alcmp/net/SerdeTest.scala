@@ -1,6 +1,6 @@
 package ch.epfl.alcmp.net
 
-import ch.epfl.alcmp.data.IList
+import ch.epfl.alcmp.data.{IList, IMatrix, IHeap, IBinaryTree}
 import ch.epfl.alcmp.data.TypeId
 import ch.epfl.alcmp.net.SimulationMessage.{CombineMessage, DivideMessage, DoneMessage, RegisterMessage}
 import org.scalatest.flatspec.AnyFlatSpec
@@ -39,12 +39,16 @@ class SerdeTest extends AnyFlatSpec with should.Matchers {
   }
 
   "Serializing and Deserializing COMBINE messages" should "work" in {
-    val reg1 = CombineMessage(101, 2, 1, IList(List(5, 6, 7)), List(0, 1, 2))
-    val reg2 = CombineMessage(102, 3, 2, IList(List(6, 7, 8)), List(1, 2, 3))
-    Serdes.serialize[CombineMessage](TypeId.ListType, reg1) should be ("101/2/1/5,6,7/0,1,2")
-    Serdes.serialize[CombineMessage](TypeId.ListType, reg2) should be ("102/3/2/6,7,8/1,2,3")
-    Serdes.deserialize[CombineMessage](TypeId.ListType, "1/2/3/0,9,10/0,1,2") should be (CombineMessage(1, 2, 3, IList(List(0, 9, 10)), List(0, 1, 2)))
-    Serdes.deserialize[CombineMessage](TypeId.ListType, "0/0/0/0,0,0/0,0,0") should be (CombineMessage(0, 0, 0, IList(List(0, 0, 0)), List(0, 0, 0)))
+    val comb1 = CombineMessage(101, 2, 1, IList(List(5, 6, 7)), List(0, 1, 2))
+    Serdes.serialize[CombineMessage](TypeId.ListType, comb1) should be ("101/2/1/(0,1,2)/(5,6,7)")
+    Serdes.deserialize[CombineMessage](TypeId.ListType, "101/2/1/(0,1,2)/(5,6,7)") should be (comb1)
 
+    val comb2 = CombineMessage(101, 2, 1, IMatrix(List(List(1, 0), List(0, 1))), List(0, 1, 2))
+    Serdes.serialize[CombineMessage](TypeId.MatrixType, comb2) should be ("101/2/1/(0,1,2)/((1,0),(0,1))")
+    Serdes.deserialize[CombineMessage](TypeId.MatrixType, "101/2/1/(0,1,2)/((1,0),(0,1))") should be (comb2)
+
+    val comb3 = CombineMessage(102, 3, 2, IHeap(List(6, 7, 8)), List(1, 2, 3))
+    Serdes.serialize[CombineMessage](TypeId.HeapType, comb3) should be ("102/3/2/(1,2,3)/(6,7,8)")
+    Serdes.deserialize[CombineMessage](TypeId.HeapType, "102/3/2/(1,2,3)/(6,7,8)") should be (comb3)
   }
 }
