@@ -28,8 +28,6 @@ object Serde {
     override def serialize(obj: RegisterMessage): String = Serdes.serialize[Int](obj.id)
     override def deserialize(data: String): RegisterMessage = RegisterMessage(Serdes.deserialize[Int](data))
 
-  //given Serde[List[String]]
-
   given Serde[DoneMessage] with
     override def serialize(obj: DoneMessage): String = Serdes.serialize[Int](obj.id)
     override def deserialize(data: String): DoneMessage = DoneMessage(Serdes.deserialize[Int](data))
@@ -72,7 +70,6 @@ object Serde {
         case TypeId.MatrixType =>
           val output = arr(4).substring(2, arr(4).length - 2).split("\\),\\(")
             .map(s => s.split(",").map(s => s.toInt).toList)
-          print(output)
           CombineMessage(arr(0).toInt, arr(1).toInt, arr(2).toInt, IMatrix(output.toList), highlights.toList)
         case TypeId.HeapType =>
           val iheap = arr(4).substring(1, arr(4).length - 1).split(",").map(s => s.toInt)
