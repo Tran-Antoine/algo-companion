@@ -2,7 +2,6 @@ package ch.epfl.alcmp.net
 
 import ch.epfl.alcmp.data.{IBinaryTree, IHeap, IList, IMatrix, InputType, TypeId}
 import ch.epfl.alcmp.net.SimulationMessage.{CombineMessage, DivideMessage, DoneMessage, RegisterMessage}
-import jdk.internal.joptsimple.internal.Strings
 
 import java.nio.charset.StandardCharsets
 import java.util.{Base64, StringJoiner}
@@ -35,7 +34,7 @@ object Serde {
   given (TypeId => Serde[DivideMessage]) with
     override def apply(t: TypeId): Serde[DivideMessage] = new Serde[DivideMessage]:
       override def serialize(obj: DivideMessage): String =
-        var s = List(obj.id, obj.depth, obj.index, obj.highlights.mkString(",")).mkString("/") + "/"
+        val s = List(obj.id, obj.depth, obj.index, obj.highlights.mkString(",")).mkString("/") + "/"
         val b1 = StringJoiner(";")
         for ( output <- obj.outputs) {
           output match
