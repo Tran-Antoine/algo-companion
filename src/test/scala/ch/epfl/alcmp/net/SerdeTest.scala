@@ -40,15 +40,29 @@ class SerdeTest extends AnyFlatSpec with should.Matchers {
 
   "Serializing and Deserializing COMBINE messages" should "work" in {
     val comb1 = CombineMessage(101, 2, 1, IList(List(5, 6, 7)), List(0, 1, 2))
-    Serdes.serialize[CombineMessage](TypeId.ListType, comb1) should be ("101/2/1/(0,1,2)/(5,6,7)")
-    Serdes.deserialize[CombineMessage](TypeId.ListType, "101/2/1/(0,1,2)/(5,6,7)") should be (comb1)
+    Serdes.serialize[CombineMessage](TypeId.ListType, comb1) should be ("101/2/1/0,1,2/5,6,7")
+    Serdes.deserialize[CombineMessage](TypeId.ListType, "101/2/1/0,1,2/5,6,7") should be (comb1)
 
     val comb2 = CombineMessage(101, 2, 1, IMatrix(List(List(1, 0), List(0, 1))), List(0, 1, 2))
-    Serdes.serialize[CombineMessage](TypeId.MatrixType, comb2) should be ("101/2/1/(0,1,2)/((1,0),(0,1))")
-    Serdes.deserialize[CombineMessage](TypeId.MatrixType, "101/2/1/(0,1,2)/((1,0),(0,1))") should be (comb2)
+    Serdes.serialize[CombineMessage](TypeId.MatrixType, comb2) should be ("101/2/1/0,1,2/1,0,,0,1")
+    Serdes.deserialize[CombineMessage](TypeId.MatrixType, "101/2/1/0,1,2/1,0,,0,1") should be (comb2)
 
     val comb3 = CombineMessage(102, 3, 2, IHeap(List(6, 7, 8)), List(1, 2, 3))
-    Serdes.serialize[CombineMessage](TypeId.HeapType, comb3) should be ("102/3/2/(1,2,3)/(6,7,8)")
-    Serdes.deserialize[CombineMessage](TypeId.HeapType, "102/3/2/(1,2,3)/(6,7,8)") should be (comb3)
+    Serdes.serialize[CombineMessage](TypeId.HeapType, comb3) should be ("102/3/2/1,2,3/6,7,8")
+    Serdes.deserialize[CombineMessage](TypeId.HeapType, "102/3/2/1,2,3/6,7,8") should be (comb3)
+  }
+
+  "Serializing and Deserializing DIVIDE messages" should "work" in {
+    val div1 = DivideMessage(101, 2, 1, List(IList(List(5, 6, 7)), IList(List(2,5,2))), List(0, 1, 2))
+    Serdes.serialize[DivideMessage](TypeId.ListType, div1) should be ("101/2/1/0,1,2/5,6,7;2,5,2")
+    Serdes.deserialize[DivideMessage](TypeId.ListType, "101/2/1/0,1,2/5,6,7;2,5,2") should be (div1)
+
+    val div2 = DivideMessage(101, 2, 1, List(IMatrix(List(List(1, 0), List(0, 1))), IMatrix(List(List(2, 0), List(0, 2)))), List(0, 1, 2))
+    Serdes.serialize[DivideMessage](TypeId.MatrixType, div2) should be ("101/2/1/0,1,2/1,0,,0,1;2,0,,0,2")
+    Serdes.deserialize[DivideMessage](TypeId.MatrixType, "101/2/1/0,1,2/1,0,,0,1;2,0,,0,2") should be (div2)
+
+    val div3 = DivideMessage(102, 3, 2, List(IHeap(List(6, 7, 8)), IHeap(List(1,2,3))), List(1, 2, 3))
+    Serdes.serialize[DivideMessage](TypeId.HeapType, div3) should be ("102/3/2/1,2,3/6,7,8;1,2,3")
+    Serdes.deserialize[DivideMessage](TypeId.HeapType, "102/3/2/1,2,3/6,7,8;1,2,3") should be (div3)
   }
 }
