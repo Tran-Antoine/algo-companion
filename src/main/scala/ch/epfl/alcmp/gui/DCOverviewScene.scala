@@ -1,7 +1,7 @@
 package ch.epfl.alcmp.gui
 
 import javafx.scene.control.{Button, Label, TextField}
-import javafx.scene.layout.{Background, ColumnConstraints, GridPane, RowConstraints}
+import javafx.scene.layout.{Background, Border, ColumnConstraints, GridPane, RowConstraints}
 import scalafx.application.Platform
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
@@ -40,6 +40,21 @@ object DCOverviewScene extends Scene {
     val inputTypeField = new TextField()
     inputTypeField.getStyleClass.add("field-box")
     inputTypeField.setPromptText("List, Matrix, Heap ...")
+    inputTypeField.textProperty().addListener((_, _, newValue) => {
+      val values = Set("List", "Matrix", "Heap", "BinaryTree")
+      inputTypeField.getStyleClass.removeAll("green-border", "red-border")
+
+      if(newValue.isEmpty) {
+        inputTypeField.getStyleClass.removeAll("green-border", "red-border")
+      } else if(values.contains(newValue)) {
+        println(inputTypeField.getStyleClass)
+        inputTypeField.getStyleClass.add("green-border")
+        inputTypeField.getStyleClass.remove("red-border")
+      } else {
+        inputTypeField.getStyleClass.add("red-border")
+        inputTypeField.getStyleClass.remove("green-border")
+      }
+    })
 
     val grid = GridPane()
 
