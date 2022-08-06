@@ -84,10 +84,10 @@ object DCOverviewScene extends Scene {
     getChildren.add(vbox)
     Platform.runLater(() => vbox.requestFocus()) // takes focus off texfield
 
-    vbox.setOnKeyPressed(e => {
-      if (e.getCode == KeyCode.ESCAPE) {
-        Platform.runLater(() => vbox.requestFocus())
-      }
+    vbox.setOnKeyPressed(e => e.getCode match {
+      case KeyCode.ESCAPE => Platform.runLater(() => vbox.requestFocus())
+      case KeyCode.ENTER => next.fire()
+      case _ => ()
     })
   }
 }
