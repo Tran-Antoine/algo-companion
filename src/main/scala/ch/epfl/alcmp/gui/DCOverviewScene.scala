@@ -44,13 +44,10 @@ object DCOverviewScene extends Scene {
       val values = Set("List", "Matrix", "Heap", "BinaryTree")
       inputTypeField.getStyleClass.removeAll("green-border", "red-border")
 
-      if(newValue.isEmpty) {
-        inputTypeField.getStyleClass.removeAll("green-border", "red-border")
-      } else if(values.contains(newValue)) {
-        println(inputTypeField.getStyleClass)
+      if(values.contains(newValue)) {
         inputTypeField.getStyleClass.add("green-border")
         inputTypeField.getStyleClass.remove("red-border")
-      } else {
+      } else if(newValue.nonEmpty) {
         inputTypeField.getStyleClass.add("red-border")
         inputTypeField.getStyleClass.remove("green-border")
       }
