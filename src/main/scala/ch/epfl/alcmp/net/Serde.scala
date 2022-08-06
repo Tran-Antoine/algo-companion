@@ -23,6 +23,10 @@ object Serde {
     override def serialize(obj: String): String = Base64.getEncoder.encodeToString(obj.getBytes(StandardCharsets.UTF_8))
     override def deserialize(data: String): String = new String(Base64.getDecoder.decode(data), StandardCharsets.UTF_8)
 
+  given Serde[List[Int]] with
+    override def serialize(obj: List[Int]): String = listOf[Int](",").serialize(obj)
+    override def deserialize(data: String): List[Int] = listOf[Int](",").deserialize(data)
+
   given Serde[RegisterMessage] with
     override def serialize(obj: RegisterMessage): String = Serdes.serialize[Int](obj.id)
     override def deserialize(data: String): RegisterMessage = RegisterMessage(Serdes.deserialize[Int](data))
@@ -36,19 +40,16 @@ object Serde {
     override def deserialize(data: String): List[T] = data.split(sep).toList.map(elem => Serdes.deserialize[T](elem))
 
   given Serde[IList] with
-    override def serialize(obj: IList): String = listOf[Int](",").serialize(obj.list)
-    override def deserialize(data: String): IList = IList(listOf[Int](",").deserialize(data))
+    override def serialize(obj: IList): String = Serdes.serialize[List[Int]](obj.list)
+    override def deserialize(data: String): IList = IList(Serdes.deserialize[List[Int]](data))
 
   given Serde[IHeap] with
-    override def serialize(obj: IHeap): String = listOf[Int](",").serialize(obj.list)
-    override def deserialize(data: String): IHeap = IHeap(listOf[Int](",").deserialize(data))
+    override def serialize(obj: IHeap): String = Serdes.serialize[List[Int]](obj.list)
+    override def deserialize(data: String): IHeap = IHeap(Serdes.deserialize[List[Int]](data))
 
   given Serde[IMatrix] with
-    override def serialize(obj: IMatrix): String =
-      val b = StringJoiner(",,")
-      obj.rows.foreach(list => b.add(listOf[Int](",").serialize(list)))
-      b.toString
-    override def deserialize(data: String): IMatrix = IMatrix(data.split(",,").toList.map(s => listOf[Int](",").deserialize(s)))
+    override def serialize(obj: IMatrix): String = listOf[List[Int]](",,").serialize(obj.rows)
+    override def deserialize(data: String): IMatrix = IMatrix(listOf[List[Int]](",,").deserialize(data))
 
   given (TypeId => Serde[DivideMessage]) with
     override def apply(t: TypeId): Serde[DivideMessage] = new Serde[DivideMessage]:
