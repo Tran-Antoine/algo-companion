@@ -31,10 +31,24 @@ object Serde {
     override def serialize(obj: DoneMessage): String = Serdes.serialize[Int](obj.id)
     override def deserialize(data: String): DoneMessage = DoneMessage(Serdes.deserialize[Int](data))
 
-  def listOf[T](using Serde[T])(sep: String): Serde[List[T]] = new Serde[List[T]]() {
+  def listOf[T](using Serde[T])(sep: String): Serde[List[T]] = new Serde[List[T]]():
     override def serialize(arg: List[T]): String = arg.map(elem => Serdes.serialize[T](elem)).mkString(sep)
     override def deserialize(data: String): List[T] = data.split(sep).toList.map(elem => Serdes.deserialize[T](elem))
-  }
+
+  given Serde[IList] with
+    override def serialize(obj: IList): String = listOf[Int](",").serialize(obj.list)
+    override def deserialize(data: String): IList = IList(listOf[Int](",").deserialize(data))
+
+  given Serde[IHeap] with
+    override def serialize(obj: IHeap): String = listOf[Int](",").serialize(obj.list)
+    override def deserialize(data: String): IHeap = IHeap(listOf[Int](",").deserialize(data))
+
+  given Serde[IMatrix] with
+    override def serialize(obj: IMatrix): String =
+      val b = StringJoiner(",,")
+      obj.rows.foreach(list => b.add(listOf[Int](",").serialize(list)))
+      b.toString
+    override def deserialize(data: String): IMatrix = IMatrix(data.split(",,").toList.map(s => listOf[Int](",").deserialize(s)))
 
   given (TypeId => Serde[DivideMessage]) with
     override def apply(t: TypeId): Serde[DivideMessage] = new Serde[DivideMessage]:
@@ -48,13 +62,10 @@ object Serde {
         val b2 = StringJoiner(";")
         for ( output <- obj.outputs) {
           output match
-            case IList(list) => b2.add(listOf[Int](",").serialize(list))
-            case IMatrix(rows) =>
-              val b3 = StringJoiner(",,")
-              rows.foreach(list => b3.add(listOf[Int](",").serialize(list)))
-              b2.add(b3.toString)
-            case IHeap(list) => b2.add(listOf[Int](",").serialize(list))
-            case IBinaryTree(root) => ???
+            case ilist: IList => b2.add(Serdes.serialize[IList](ilist))
+            case imatrix: IMatrix => b2.add(Serdes.serialize[IMatrix](imatrix))
+            case iheap: IHeap => b2.add(Serdes.serialize[IHeap](iheap))
+            case ibinary: IBinaryTree => ???
         }
         b1.add(b2.toString)
         b1.toString
@@ -65,15 +76,13 @@ object Serde {
         val highlights = listOf[Int](",").deserialize(arr(3))
         t match
         case TypeId.ListType =>
-          val outputs = arr(4).split(";").toList.map(list => IList(listOf[Int](",").deserialize(list)))
+          val outputs = listOf[IList](";").deserialize(arr(4))
           DivideMessage(id, depth, index, outputs, highlights)
         case TypeId.MatrixType =>
-          val outputs = arr(4).split(";").map(lists =>
-              IMatrix(lists.split(",,").map(list => listOf[Int](",").deserialize(list).toList).toList)
-            ).toList
+          val outputs = listOf[IMatrix](";").deserialize(arr(4))
           DivideMessage(id, depth, index, outputs, highlights)
         case TypeId.HeapType =>
-          val outputs = arr(4).split(";").toList.map(list => IHeap(listOf[Int](",").deserialize(list)))
+          val outputs = listOf[IHeap](";").deserialize(arr(4))
           DivideMessage(id, depth, index, outputs, highlights)
         case TypeId.BinaryTreeType => ???
 
@@ -86,13 +95,10 @@ object Serde {
           .add(obj.index.toString)
           .add(listOf[Int](",").serialize(obj.highlights))
         obj.output match {
-          case IList(list) => b1.add(list.mkString(","))
-          case IMatrix(rows) =>
-            val b2 = StringJoiner(",,")
-            rows.foreach(list => b2.add(listOf[Int](",").serialize(list)))
-            b1.add(b2.toString)
-          case IHeap(list) => b1.add(list.mkString(","))
-          case IBinaryTree(root) => ???
+          case ilist: IList => b1.add(Serdes.serialize[IList](ilist))
+          case imatrix: IMatrix => b1.add(Serdes.serialize[IMatrix](imatrix))
+          case iheap: IHeap => b1.add(Serdes.serialize[IHeap](iheap))
+          case ibinary: IBinaryTree => ???
         }
         b1.toString
       override def deserialize(data: String): CombineMessage =
@@ -100,14 +106,8 @@ object Serde {
         val (id, depth, index) = (Serdes.deserialize[Int](arr(0)), Serdes.deserialize[Int](arr(1)), Serdes.deserialize[Int](arr(2)))
         val highlights = listOf[Int](",").deserialize(arr(3))
         t match
-        case TypeId.ListType =>
-          val output = listOf[Int](",").deserialize(arr(4))
-          CombineMessage(id, depth, index, IList(output), highlights)
-        case TypeId.MatrixType =>
-          val output = arr(4).split(",,").toList.map(s => listOf[Int](",").deserialize(s))
-          CombineMessage(id, depth, index, IMatrix(output), highlights)
-        case TypeId.HeapType =>
-          val output = listOf[Int](",").deserialize(arr(4))
-          CombineMessage(id, depth, index, IHeap(output), highlights)
+        case TypeId.ListType => CombineMessage(id, depth, index, Serdes.deserialize[IList](arr(4)), highlights)
+        case TypeId.MatrixType => CombineMessage(id, depth, index, Serdes.deserialize[IMatrix](arr(4)), highlights)
+        case TypeId.HeapType => CombineMessage(id, depth, index,Serdes.deserialize[IHeap](arr(4)), highlights)
         case TypeId.BinaryTreeType => ???
 }
