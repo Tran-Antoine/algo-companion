@@ -32,3 +32,17 @@
     -fx-font-size: 20pt;
     -fx-font-family: "Cambria";
 }
+
+.next-button {
+    -fx-text-fill: #eee;
+    -fx-font-size: 20pt;
+    -fx-font-family: "Cambria";
+    -fx-background-color: #104B93;
+    -fx-alignment: center;
+}
+
+.next-button:hover {
+
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+}
