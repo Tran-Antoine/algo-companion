@@ -47,7 +47,6 @@ class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
 
     process.waitFor()
     process.destroy()
-    server.close()
 
     output should be ("[23]")
 

@@ -29,8 +29,6 @@ class SimulationListenerTest extends AsyncFlatSpec with should.Matchers {
     writer.flush()
     writer.close()
 
-    receiver.close()
-    server.close()
 
     task map {
       result =>
@@ -84,11 +82,11 @@ class SimulationListenerTest extends AsyncFlatSpec with should.Matchers {
     writer.flush()
     writer.close()
 
-    receiver.close()
-    server.close()
+
 
     task map {
       result =>
+
         result.size should be (1)
 
         val head = result.head
@@ -185,11 +183,9 @@ class SimulationListenerTest extends AsyncFlatSpec with should.Matchers {
     writer.flush()
     writer.close()
 
-    receiver.close()
-    server.close()
-
     task map {
       result =>
+
         result.size should be (2)
 
         val r1 = result.head
