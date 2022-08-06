@@ -45,39 +45,39 @@ class SimulationListenerTest extends AsyncFlatSpec with should.Matchers {
     val task: Future[List[SimulationData]] = new SimulationListener(receiver, TypeId.ListType).run()
 
     val writer = new BufferedWriter(new OutputStreamWriter(sender.getOutputStream))
-    writer.write(s"REGISTER ${Serdes.serialize[RegisterMessage](RegisterMessage(1))}\n")
+    writer.write(s"REGISTER ${Serdes.serialize[RegisterMessage](RegisterMessage(30))}\n")
 
     val input =  IList(List(1,2,3,4))
     val (left, right) = (IList(List(1,2)), IList(List(3,4)))
     val (oLeft, oRight) = (IList(List(2)), IList(List(4)))
-    val result = IList(List(4))
+    val output = IList(List(4))
 
     writer.write(s"DIVIDE ${Serdes.serialize[DivideMessage](
       TypeId.ListType,
-      DivideMessage(0, 0, 0, List(input), Nil))}\n")
+      DivideMessage(30, 0, 0, List(input), Nil))}\n")
 
     writer.write(s"DIVIDE ${Serdes.serialize[DivideMessage](
       TypeId.ListType,
-      DivideMessage(0, 1, 0, List(left), Nil))}\n")
+      DivideMessage(30, 1, 0, List(left), Nil))}\n")
 
     writer.write(s"DIVIDE ${Serdes.serialize[DivideMessage](
       TypeId.ListType,
-      DivideMessage(0, 1, 1, List(right), Nil))}\n")
+      DivideMessage(30, 1, 1, List(right), Nil))}\n")
 
     writer.write(s"COMBINE ${Serdes.serialize[CombineMessage](
       TypeId.ListType,
-      CombineMessage(0, 1, 0, oLeft, Nil))}\n")
+      CombineMessage(30, 1, 0, oLeft, Nil))}\n")
 
     writer.write(s"COMBINE ${Serdes.serialize[CombineMessage](
       TypeId.ListType,
-      CombineMessage(0, 1, 1, oRight, Nil))}\n")
+      CombineMessage(30, 1, 1, oRight, Nil))}\n")
 
     writer.write(s"COMBINE ${Serdes.serialize[CombineMessage](
       TypeId.ListType,
-      CombineMessage(0, 0, 0, result, Nil))}\n")
+      CombineMessage(30, 0, 0, output, Nil))}\n")
 
 
-    writer.write(s"DONE ${Serdes.serialize[DoneMessage](DoneMessage(1))}\n")
+    writer.write(s"DONE ${Serdes.serialize[DoneMessage](DoneMessage(30))}\n")
     writer.flush()
     writer.close()
 
@@ -87,8 +87,9 @@ class SimulationListenerTest extends AsyncFlatSpec with should.Matchers {
 
         val head = result.head
 
-        head.combineValueAt(0, 0) should be (IList(List(4)))
-        head.divisionRowAt(0) should be (List(IList(List(1,2,3,4))))
+        head.combineValueAt(0, 0) should be (output)
+        head.divisionRowAt(0) should be (List(input))
+        head.divisionValueAt(1, 0) should be (left)
         head.divisionValueAt(1, 1) should be (right)
     }
   }
