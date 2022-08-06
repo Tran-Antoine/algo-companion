@@ -75,17 +75,12 @@ object Serde {
         val arr = data.split("/")
         val (id, depth, index) = (Serdes.deserialize[Int](arr(0)), Serdes.deserialize[Int](arr(1)), Serdes.deserialize[Int](arr(2)))
         val highlights = listOf[Int](",").deserialize(arr(3))
-        t match
-        case TypeId.ListType =>
-          val outputs = listOf[IList](";").deserialize(arr(4))
-          DivideMessage(id, depth, index, outputs, highlights)
-        case TypeId.MatrixType =>
-          val outputs = listOf[IMatrix](";").deserialize(arr(4))
-          DivideMessage(id, depth, index, outputs, highlights)
-        case TypeId.HeapType =>
-          val outputs = listOf[IHeap](";").deserialize(arr(4))
-          DivideMessage(id, depth, index, outputs, highlights)
-        case TypeId.BinaryTreeType => ???
+        val outputs = t match
+          case TypeId.ListType => listOf[IList](";").deserialize(arr(4))
+          case TypeId.MatrixType => listOf[IMatrix](";").deserialize(arr(4))
+          case TypeId.HeapType => listOf[IHeap](";").deserialize(arr(4))
+          case TypeId.BinaryTreeType => ???
+        DivideMessage(id, depth, index, outputs, highlights)
 
   given (TypeId => Serde[CombineMessage]) with
     override def apply(t: TypeId): Serde[CombineMessage] = new Serde[CombineMessage]:
@@ -95,20 +90,21 @@ object Serde {
           .add(obj.depth.toString)
           .add(obj.index.toString)
           .add(listOf[Int](",").serialize(obj.highlights))
-        obj.output match {
+        obj.output match
           case ilist: IList => b1.add(Serdes.serialize[IList](ilist))
           case imatrix: IMatrix => b1.add(Serdes.serialize[IMatrix](imatrix))
           case iheap: IHeap => b1.add(Serdes.serialize[IHeap](iheap))
           case ibinary: IBinaryTree => ???
-        }
+
         b1.toString
       override def deserialize(data: String): CombineMessage =
         val arr = data.split("/")
         val (id, depth, index) = (Serdes.deserialize[Int](arr(0)), Serdes.deserialize[Int](arr(1)), Serdes.deserialize[Int](arr(2)))
         val highlights = listOf[Int](",").deserialize(arr(3))
-        t match
-        case TypeId.ListType => CombineMessage(id, depth, index, Serdes.deserialize[IList](arr(4)), highlights)
-        case TypeId.MatrixType => CombineMessage(id, depth, index, Serdes.deserialize[IMatrix](arr(4)), highlights)
-        case TypeId.HeapType => CombineMessage(id, depth, index,Serdes.deserialize[IHeap](arr(4)), highlights)
-        case TypeId.BinaryTreeType => ???
+        val output = t match
+          case TypeId.ListType => Serdes.deserialize[IList](arr(4))
+          case TypeId.MatrixType => Serdes.deserialize[IMatrix](arr(4))
+          case TypeId.HeapType => Serdes.deserialize[IHeap](arr(4))
+          case TypeId.BinaryTreeType => ???
+        CombineMessage(id, depth, index, output, highlights)
 }
