@@ -37,7 +37,9 @@ object Serde {
 
   def listOf[T](using Serde[T])(sep: String): Serde[List[T]] = new Serde[List[T]]():
     override def serialize(arg: List[T]): String = arg.map(elem => Serdes.serialize[T](elem)).mkString(sep)
-    override def deserialize(data: String): List[T] = data.split(sep).toList.map(elem => Serdes.deserialize[T](elem))
+    override def deserialize(data: String): List[T] =
+      if data.isEmpty then Nil
+      else data.split(sep).toList.map(elem => Serdes.deserialize[T](elem))
 
   given Serde[IList] with
     override def serialize(obj: IList): String = Serdes.serialize[List[Int]](obj.list)
