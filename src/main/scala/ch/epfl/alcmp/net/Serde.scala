@@ -107,7 +107,7 @@ object Serde {
           val output = arr(4).split(",,").toList.map(s => listOf[Int](",").deserialize(s))
           CombineMessage(id, depth, index, IMatrix(output), highlights)
         case TypeId.HeapType =>
-          val output = listOf[Int](",").deserialize(arr(3))
+          val output = listOf[Int](",").deserialize(arr(4))
           CombineMessage(id, depth, index, IHeap(output), highlights)
         case TypeId.BinaryTreeType => ???
 }
