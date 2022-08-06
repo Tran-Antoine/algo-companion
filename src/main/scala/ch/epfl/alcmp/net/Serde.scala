@@ -5,6 +5,7 @@ import ch.epfl.alcmp.net.SimulationMessage.{CombineMessage, DivideMessage, DoneM
 
 import java.nio.charset.StandardCharsets
 import java.util.{Base64, StringJoiner}
+import scala.reflect.ClassTag
 
 sealed trait Serde[T] {
 
@@ -22,7 +23,6 @@ object Serde {
     override def serialize(obj: String): String = Base64.getEncoder.encodeToString(obj.getBytes(StandardCharsets.UTF_8))
     override def deserialize(data: String): String = new String(Base64.getDecoder.decode(data), StandardCharsets.UTF_8)
 
-
   given Serde[RegisterMessage] with
     override def serialize(obj: RegisterMessage): String = Serdes.serialize[Int](obj.id)
     override def deserialize(data: String): RegisterMessage = RegisterMessage(Serdes.deserialize[Int](data))
@@ -31,69 +31,83 @@ object Serde {
     override def serialize(obj: DoneMessage): String = Serdes.serialize[Int](obj.id)
     override def deserialize(data: String): DoneMessage = DoneMessage(Serdes.deserialize[Int](data))
 
+  def listOf[T](using Serde[T])(sep: String): Serde[List[T]] = new Serde[List[T]]() {
+    override def serialize(arg: List[T]): String = arg.map(elem => Serdes.serialize[T](elem)).mkString(sep)
+    override def deserialize(data: String): List[T] = data.split(sep).toList.map(elem => Serdes.deserialize[T](elem))
+  }
+
   given (TypeId => Serde[DivideMessage]) with
     override def apply(t: TypeId): Serde[DivideMessage] = new Serde[DivideMessage]:
       override def serialize(obj: DivideMessage): String =
-        val s = List(obj.id, obj.depth, obj.index, obj.highlights.mkString(",")).mkString("/") + "/"
-        val b1 = StringJoiner(";")
+        val b1 = StringJoiner("/")
+                .add(obj.id.toString)
+                .add(obj.depth.toString)
+                .add(obj.index.toString)
+                .add(listOf[Int](",").serialize(obj.highlights))
+
+        val b2 = StringJoiner(";")
         for ( output <- obj.outputs) {
           output match
-            case IList(list) => b1.add(list.mkString(","))
+            case IList(list) => b2.add(listOf[Int](",").serialize(list))
             case IMatrix(rows) =>
-              val b2 = StringJoiner(",,")
-              rows.foreach(list => b2.add(list.mkString(",")))
-              b1.add(b2.toString)
-            case IHeap(list) => b1.add(list.mkString(","))
+              val b3 = StringJoiner(",,")
+              rows.foreach(list => b3.add(listOf[Int](",").serialize(list)))
+              b2.add(b3.toString)
+            case IHeap(list) => b2.add(listOf[Int](",").serialize(list))
             case IBinaryTree(root) => ???
         }
-        s + b1.toString
+        b1.add(b2.toString)
+        b1.toString
 
       override def deserialize(data: String): DivideMessage =
         val arr = data.split("/")
-        val (id, depth, index) = (arr(0).toInt, arr(1).toInt, arr(2).toInt)
-        val highlights = arr(3).split(",").map(s => s.toInt).toList
+        val (id, depth, index) = (Serdes.deserialize[Int](arr(0)), Serdes.deserialize[Int](arr(1)), Serdes.deserialize[Int](arr(2)))
+        val highlights = listOf[Int](",").deserialize(arr(3))
         t match
         case TypeId.ListType =>
-          val outputs = arr(4).split(";")
-                        .map(list => IList(list.split(",").map(s2 => s2.toInt).toList)).toList
+          val outputs = arr(4).split(";").toList.map(list => IList(listOf[Int](",").deserialize(list)))
           DivideMessage(id, depth, index, outputs, highlights)
         case TypeId.MatrixType =>
-          val outputs = arr(4).split(";")
-            .map(lists => IMatrix(lists.split(",,")
-            .map(_.split(",").map(number => number.toInt).toList).toList)).toList
+          val outputs = arr(4).split(";").map(lists =>
+              IMatrix(lists.split(",,").map(list => listOf[Int](",").deserialize(list).toList).toList)
+            ).toList
           DivideMessage(id, depth, index, outputs, highlights)
         case TypeId.HeapType =>
-          val outputs = arr(4).split(";")
-            .map(list => IHeap(list.split(",").map(s2 => s2.toInt).toList)).toList
+          val outputs = arr(4).split(";").toList.map(list => IHeap(listOf[Int](",").deserialize(list)))
           DivideMessage(id, depth, index, outputs, highlights)
         case TypeId.BinaryTreeType => ???
 
   given (TypeId => Serde[CombineMessage]) with
     override def apply(t: TypeId): Serde[CombineMessage] = new Serde[CombineMessage]:
       override def serialize(obj: CombineMessage): String =
-        val commonPart = List(obj.id, obj.depth, obj.index, obj.highlights.mkString(",")).mkString("/")
+        val b1 = StringJoiner("/")
+          .add(obj.id.toString)
+          .add(obj.depth.toString)
+          .add(obj.index.toString)
+          .add(listOf[Int](",").serialize(obj.highlights))
         obj.output match {
-          case IList(list) => commonPart + "/" + list.mkString(",")
+          case IList(list) => b1.add(list.mkString(","))
           case IMatrix(rows) =>
-            val b = StringJoiner(",,")
-            rows.foreach(list => b.add(list.mkString(",")))
-            commonPart + "/" + b.toString
-          case IHeap(list) => commonPart + '/' + list.mkString(",")
+            val b2 = StringJoiner(",,")
+            rows.foreach(list => b2.add(listOf[Int](",").serialize(list)))
+            b1.add(b2.toString)
+          case IHeap(list) => b1.add(list.mkString(","))
           case IBinaryTree(root) => ???
         }
+        b1.toString
       override def deserialize(data: String): CombineMessage =
         val arr = data.split("/")
-        val (id, depth, index) = (arr(0).toInt, arr(1).toInt, arr(2).toInt)
-        val highlights = arr(3).split(",").map(s => s.toInt).toList
+        val (id, depth, index) = (Serdes.deserialize[Int](arr(0)), Serdes.deserialize[Int](arr(1)), Serdes.deserialize[Int](arr(2)))
+        val highlights = listOf[Int](",").deserialize(arr(3))
         t match
         case TypeId.ListType =>
-          val output = arr(4).split(",").map(s => s.toInt).toList
+          val output = listOf[Int](",").deserialize(arr(4))
           CombineMessage(id, depth, index, IList(output), highlights)
         case TypeId.MatrixType =>
-          val output = arr(4).split(",,").map(s => s.split(",").map(s => s.toInt).toList).toList
+          val output = arr(4).split(",,").toList.map(s => listOf[Int](",").deserialize(s))
           CombineMessage(id, depth, index, IMatrix(output), highlights)
         case TypeId.HeapType =>
-          val output = arr(4).split(",").map(s => s.toInt).toList
+          val output = listOf[Int](",").deserialize(arr(3))
           CombineMessage(id, depth, index, IHeap(output), highlights)
         case TypeId.BinaryTreeType => ???
 }
