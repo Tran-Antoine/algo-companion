@@ -4,7 +4,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.*
 import matchers.*
 
-import java.io.{BufferedReader, BufferedWriter, FileInputStream, FileOutputStream, FileReader, FileWriter, InputStream, InputStreamReader}
+import java.io.{BufferedReader, BufferedWriter, FileInputStream, FileOutputStream, FileReader, FileWriter, InputStream, InputStreamReader, OutputStreamWriter}
+import java.net.ServerSocket
 import scala.io.Source
 
 class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
@@ -30,16 +31,16 @@ class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
 
     val script = DCAssembler.assemble(base, divide, combine)
 
-    val writer = new FileWriter("bin/dc_template_completed.py")
-    writer.write(script)
-    writer.close()
+    val server = ServerSocket(4000)
 
     val process = ProcessBuilder(
-      "python",
-      "src/test/python/template_assembly_helper.py",
-      input,
-      "bin/dc_template_completed.py").start()
+      "python", "src/test/python/template_assembly_helper.py", input).start()
 
+    val sender = server.accept()
+    val writer = new BufferedWriter(new OutputStreamWriter(sender.getOutputStream))
+    writer.write(script)
+    writer.flush()
+    writer.close()
 
     val reader = new BufferedReader(new InputStreamReader(process.getInputStream))
     val output = reader.readLine()
