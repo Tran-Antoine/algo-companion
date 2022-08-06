@@ -13,6 +13,7 @@ import scalafx.scene.text.Text
 import scalafx.geometry.Pos
 import javafx.geometry.HPos
 import javafx.geometry.VPos
+import javafx.scene.input.KeyCode
 
 object DCOverviewScene extends Scene {
 
@@ -67,5 +68,11 @@ object DCOverviewScene extends Scene {
 
     getChildren.add(vbox)
     Platform.runLater(() => vbox.requestFocus()) // takes focus off texfield
+
+    vbox.setOnKeyPressed(e => {
+      if (e.getCode == KeyCode.ESCAPE) {
+        Platform.runLater(() => vbox.requestFocus())
+      }
+    })
   }
 }
