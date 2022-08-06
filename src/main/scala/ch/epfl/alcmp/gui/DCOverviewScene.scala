@@ -1,6 +1,6 @@
 package ch.epfl.alcmp.gui
 
-import javafx.scene.control.{Label, TextField}
+import javafx.scene.control.{Button, Label, TextField}
 import javafx.scene.layout.{Background, ColumnConstraints, GridPane, RowConstraints}
 import scalafx.application.Platform
 import scalafx.geometry.Insets
@@ -40,7 +40,6 @@ object DCOverviewScene extends Scene {
     inputTypeField.getStyleClass.add("field-box")
     inputTypeField.setPromptText("List, Matrix, Heap ...")
 
-
     val grid = GridPane()
 
     grid.getStyleClass.add("input-grid")
@@ -54,12 +53,17 @@ object DCOverviewScene extends Scene {
     grid.setHgap(60)
     grid.setVgap(40)
 
-
+    val next = Button("Next")
+    next.getStyleClass.add("next-button")
+    next.setPrefWidth(200)
+    val buttonBox = VBox()
+    buttonBox.getChildren.add(next)
+    buttonBox.setAlignment(Pos.BottomRight)
 
     vbox.getStylesheets.add("css/dc-overview.css")
     vbox.getStyleClass.add("main-overview-box")
     vbox.setPrefSize(1200, 900) // JavaFX is the worst thing I've ever seen
-    vbox.getChildren.addAll(title, grid)
+    vbox.getChildren.addAll(title, grid, buttonBox)
 
     getChildren.add(vbox)
     Platform.runLater(() => vbox.requestFocus()) // takes focus off texfield
