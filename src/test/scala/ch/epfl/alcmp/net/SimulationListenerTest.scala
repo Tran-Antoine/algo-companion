@@ -40,9 +40,9 @@ class SimulationListenerTest extends AsyncFlatSpec with should.Matchers {
   }
 
   "Single simulation" should "produce 1 correct SimulationData object" in {
-    val server = ServerSocket(5108)
+    val server = ServerSocket(5109)
 
-    val receiver = Socket("localhost", 5108)
+    val receiver = Socket("localhost", 5109)
     val sender = server.accept()
 
     val task: Future[List[SimulationData]] = new SimulationListener(receiver, TypeId.ListType).run()
@@ -101,9 +101,9 @@ class SimulationListenerTest extends AsyncFlatSpec with should.Matchers {
   }
 
   "Multiple simulation in random order" should "produce multiple correct SimulationData objects" in {
-    val server = ServerSocket(5108)
+    val server = ServerSocket(5104)
 
-    val receiver = Socket("localhost", 5108)
+    val receiver = Socket("localhost", 5104)
     val sender = server.accept()
 
     val task: Future[List[SimulationData]] = new SimulationListener(receiver, TypeId.ListType).run()
