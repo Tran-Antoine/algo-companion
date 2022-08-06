@@ -12,16 +12,16 @@ class StringSerde():
 
 class IntSerde():
 
-    def serialize(arg): StringSerde.serialize(str(arg))
-    def deserialize(data): int(StringSerde.deserialize(data))
+    def serialize(arg): return str(arg)
+    def deserialize(data): return int(data)
     
 class ListSerde():
 
-    def serialize(arg):
-        return "(" + arg.join(",") + ")"
+    def serialize(arg, sep=","):
+        return sep.join([str(a) for a in arg])
         
-    def deserialize(data):
-        return data[1:-1].split(",")
+    def deserialize(data, sep=","):
+        return data.split(sep)
 
 class MatrixSerde():
 
@@ -47,9 +47,9 @@ class DivideSerde():
                     IntSerde.serialize(arg[0]),
                     IntSerde.serialize(arg[1]),
                     IntSerde.serialize(arg[2]),
-                    ListSerde.serialize([input_serde.serialize(i) for i in arg[3]])
+                    ListSerde.serialize([input_serde.serialize(i) for i in arg[3]], sep=";")
                     ]
-        return ListSerde.serialize(elements)
+        return ListSerde.serialize(elements, "/")
         
         
     def deserialize(data, input_serde): 
@@ -58,7 +58,7 @@ class DivideSerde():
             IntSerde.deserialize(arg[0]),
             IntSerde.deserialize(arg[1]),
             IntSerde.deserialize(arg[2]),
-            [input_serde.deserialize(i) for i in ListSerde.deserialize(arg[3])])
+            [input_serde.deserialize(i) for i in ListSerde.deserialize(arg[3])]
         ]
 
 class CombineSerde():
