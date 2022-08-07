@@ -6,6 +6,7 @@ import matchers.*
 
 import java.io.{BufferedReader, BufferedWriter, FileInputStream, FileOutputStream, FileReader, FileWriter, InputStream, InputStreamReader, OutputStreamWriter}
 import java.net.ServerSocket
+import java.util.concurrent.TimeUnit
 import scala.io.Source
 
 class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
@@ -45,7 +46,7 @@ class DCAssemblerTest extends AnyFlatSpec with should.Matchers {
     val reader = new BufferedReader(new InputStreamReader(process.getInputStream))
     val output = reader.readLine()
 
-    process.waitFor()
+    process.waitFor(5, TimeUnit.SECONDS)
     process.destroy()
 
     output should be ("[23]")
