@@ -86,5 +86,9 @@ object DCOverviewScene extends Scene {
       case KeyCode.ENTER => next.fire()
       case _ => ()
     })
+
+    next.setOnAction(_ => {
+      ScalaFXMain.stage.scene = DCSpecs1Scene
+    })
   }
 }
