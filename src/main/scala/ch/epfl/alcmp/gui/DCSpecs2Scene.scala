@@ -70,8 +70,8 @@ object DCSpecs2Scene extends Scene {
     buttonsRow.getChildren.addAll(previousBox, hole, nextBox)
 
     vbox.setPrefSize(ScalaFXMain.WIDTH, ScalaFXMain.HEIGHT)
-    vbox.getStyleClass.add("main-specs1-box")
-    vbox.getStylesheets.add("css/dc-specs1.css")
+    vbox.getStyleClass.add("main-specs2-box")
+    vbox.getStylesheets.add("css/dc-specs2.css")
     vbox.getChildren.addAll(title, grid, buttonsRow)
 
     getChildren.add(vbox)

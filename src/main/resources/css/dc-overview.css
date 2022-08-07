@@ -19,8 +19,20 @@
 }
 
 .field-text {
+    -fx-alignment: center;
     -fx-font-size: 20pt;
     -fx-font-family: "Cambria";
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
+    -fx-background-color: #EED6C7;
+}
+
+.field-text-result {
+    -fx-alignment: center;
+    -fx-font-size: 20pt;
+    -fx-font-family: "Cambria";
+    
+    -fx-background-color: #DFEAF6;
 }
 
 .input-grid {

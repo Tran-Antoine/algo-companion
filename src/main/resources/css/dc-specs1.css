@@ -3,7 +3,7 @@
     -fx-padding: 80px;
     -fx-spacing: 10px;
     -fx-alignment: top-center;
-    -fx-background-color: #E5DFF5;
+    -fx-background-color: #DFEAF6;
 }
 
 .title-text {
@@ -24,7 +24,7 @@
 }
 
 .input-grid {
-    -fx-background-color: #ede7fc
+    -fx-background-color: #EAEFF5;
 }
 
 .field-box {
