@@ -75,15 +75,16 @@ object DCOverviewScene extends Scene {
 
     vbox.getStylesheets.add("css/dc-overview.css")
     vbox.getStyleClass.add("main-overview-box")
-    vbox.setPrefSize(1200, 900) // JavaFX is the worst thing I've ever seen
+    vbox.setPrefSize(ScalaFXMain.WIDTH, ScalaFXMain.HEIGHT) // JavaFX is the worst thing I've ever seen
     vbox.getChildren.addAll(title, grid, buttonBox)
 
     getChildren.add(vbox)
-    Platform.runLater(() => vbox.requestFocus()) // takes focus off texfield
+    Platform.runLater(() => vbox.requestFocus()) // takes focus off textfield
 
-    vbox.setOnKeyPressed(e => e.getCode match {
+    this.setOnKeyPressed(e => e.getCode match {
       case KeyCode.ESCAPE => Platform.runLater(() => vbox.requestFocus())
       case KeyCode.ENTER => next.fire()
+      case KeyCode.RIGHT => next.fire()
       case _ => ()
     })
 
