@@ -21,7 +21,7 @@ class ListSerde():
         return sep.join([str(a) for a in arg])
         
     def deserialize(data, sep=","):
-        return data.split(sep)
+        return [] if len(data) == 0 else data.split(sep)
 
 class MatrixSerde():
 
@@ -47,7 +47,8 @@ class DivideSerde():
                     IntSerde.serialize(arg[0]),
                     IntSerde.serialize(arg[1]),
                     IntSerde.serialize(arg[2]),
-                    ListSerde.serialize([input_serde.serialize(i) for i in arg[3]], sep=";")
+                    ListSerde.serialize(arg[3]),
+                    ListSerde.serialize([input_serde.serialize(i) for i in arg[4]], sep=";")
                     ]
         return ListSerde.serialize(elements, "/")
         
@@ -58,7 +59,8 @@ class DivideSerde():
             IntSerde.deserialize(arg[0]),
             IntSerde.deserialize(arg[1]),
             IntSerde.deserialize(arg[2]),
-            [input_serde.deserialize(i) for i in ListSerde.deserialize(arg[3])]
+            [IntSerde.deserialize(s) for s in ListSerde.deserialize(arg[3])],
+            [input_serde.deserialize(i) for i in ListSerde.deserialize(arg[4])]
         ]
 
 class CombineSerde():
@@ -68,7 +70,8 @@ class CombineSerde():
                     IntSerde.serialize(arg[0]),
                     IntSerde.serialize(arg[1]),
                     IntSerde.serialize(arg[2]),
-                    input_serde.serialize(arg[3])
+                    ListSerde.serialize(arg[3]),
+                    input_serde.serialize(arg[4])
                     ]
         return ListSerde.serialize(elements)
         
@@ -79,5 +82,6 @@ class CombineSerde():
             IntSerde.deserialize(arg[0]),
             IntSerde.deserialize(arg[1]),
             IntSerde.deserialize(arg[2]),
-            input_serde.deserialize(arg[3])
+            [IntSerde.deserialize(s) for s in ListSerde.deserialize(arg[3])],
+            input_serde.deserialize(arg[4])
         ]

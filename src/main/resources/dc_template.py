@@ -24,7 +24,7 @@ def run(arg, socket, div_ser, comb_ser, input_serde, input_id, depth=0):
     
         division_outputs = divide(n, arg)
         
-        socket.send(f"DIVIDE {div_ser.serialize((input_id, depth, current_index, division_outputs), input_serde)}")
+        socket.send(f"DIVIDE {div_ser.serialize((input_id, depth, current_index, [], division_outputs), input_serde)}")
         
         solved_subdivisions = [run(sub_arg, socket, div_ser, comb_ser, input_serde, input_id, depth + 1) 
                                for (i, sub_arg) in enumerate(division_outputs)]
@@ -34,7 +34,7 @@ def run(arg, socket, div_ser, comb_ser, input_serde, input_id, depth=0):
         run.maxIndices[depth] += len(division_outputs) - 1
     
     
-    socket.send(f"COMBINE {comb_ser.serialize((input_id, depth, current_index, out), input_serde)}")
+    socket.send(f"COMBINE {comb_ser.serialize((input_id, depth, current_index, [], out), input_serde)}")
     
     if depth == 0:
         socket.send(f"DONE {input_id}")
