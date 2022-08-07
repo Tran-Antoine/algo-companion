@@ -39,7 +39,7 @@ object DCOverviewScene extends Scene {
 
     val inputTypeField = new TextField()
     inputTypeField.getStyleClass.add("field-box")
-    inputTypeField.setPromptText("List, Matrix, Heap ...")
+    inputTypeField.setPromptText("List")
     inputTypeField.textProperty().addListener((_, _, newValue) => {
       val values = Set("List", "Matrix", "Heap", "BinaryTree")
       inputTypeField.getStyleClass.removeAll("green-border", "red-border")
