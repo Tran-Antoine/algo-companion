@@ -1,0 +1,31 @@
+.main-specs1-box {
+
+    -fx-padding: 80px;
+    -fx-spacing: 10px;
+    -fx-alignment: top-center;
+    -fx-background-color: #E5DFF5;
+}
+
+.title-text {
+    -fx-pref-height: 100px;
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+    -fx-font-size: 40pt;
+    -fx-font-family: "Agency FB";
+}
+
+.field-text {
+    -fx-alignment: center;
+    -fx-font-size: 20pt;
+    -fx-font-family: "Cambria";
+}
+
+.input-grid {
+    -fx-background-color: #EAEFF5;
+}
+
+.field-box {
+    -fx-alignment: center;
+    -fx-font-size: 12pt;
+    -fx-font-family: "Cambria";
+}
