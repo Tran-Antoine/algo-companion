@@ -22,3 +22,5 @@ libraryDependencies ++= {
   Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
     .map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)
 }
+
+libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
