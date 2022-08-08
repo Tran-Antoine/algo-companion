@@ -18,12 +18,11 @@ class CompositeVisualizerTest extends Scene {
     val links: List[VisualizableList] = List(List(1, 2), List(3, 4))
 
     val topPos = Position(600, 100)
-    val linksPos = List(Position(400, 300), Position(800, 300))
+    val linksPos = List(Position(400, 500), Position(800, 500))
 
 
     button.setOnAction(_ => {
-      CompositeVisualizer.drawWithPath[VisualizableList](using ListVisualizer)(pane, top, links, topPos, linksPos).play()
+      CompositeVisualizer.drawWithPath[VisualizableList](pane, top, links, topPos, linksPos).play()
     })
   }
-
 }

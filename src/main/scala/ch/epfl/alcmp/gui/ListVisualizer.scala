@@ -22,9 +22,6 @@ object ListVisualizer extends Visualizer[VisualizableList] {
     pane.setOpacity(0)
     pane.getStylesheets.add("css/vis-list.css")
 
-    /*val marker = Circle(5)
-    pane.getChildren.add(marker)*/
-
     var numberIndex = 0
 
     val list = vlist.list
@@ -32,7 +29,7 @@ object ListVisualizer extends Visualizer[VisualizableList] {
       val element = Label(number.toString)
       element.setPrefSize(SIZE, SIZE)
 
-      val xShift = (SIZE + SPACING) * (numberIndex - list.size / 2.0) + SPACING/2
+      val xShift = (SIZE + SPACING) * (numberIndex - list.size / 2.0) + SPACING / 2.0
       numberIndex += 1
 
       element.setTranslateX(xShift)
