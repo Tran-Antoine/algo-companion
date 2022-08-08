@@ -31,11 +31,15 @@ class RecurrenceParser extends RegexParsers {
     case f ~ term => FunctionCall(f, term.variable, 1, term.factor)
   }
 
-  def weightedFunctionCall: Parser[FunctionCall] = number ~ pureFunctionCall ^^ {
+  def weightedFunctionCall1: Parser[FunctionCall] = number ~ pureFunctionCall ^^ {
     case n ~ call => FunctionCall(call.name, call.variable, n, call.innerFactor)
   }
 
-  def functionCall: Parser[FunctionCall] = weightedFunctionCall | pureFunctionCall
+  def weightedFunctionCall2: Parser[FunctionCall] = (number <~ "/") ~ number ~ pureFunctionCall ^^ {
+    case n ~ d ~ call => FunctionCall(call.name, call.variable, n.doubleValue / d, call.innerFactor)
+  }
+
+  def functionCall: Parser[FunctionCall] = weightedFunctionCall2 | weightedFunctionCall1 | pureFunctionCall
 
   def number: Parser[Int] = """\d+""".r ^^ {x => x.toInt}
   def char: Parser[Char] = """[a-zA-Z]""".r ^^ {_.charAt(0)}
