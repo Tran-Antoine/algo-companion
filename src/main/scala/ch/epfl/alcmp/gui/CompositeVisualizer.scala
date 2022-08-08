@@ -7,24 +7,28 @@ import javafx.util.Duration
 
 object CompositeVisualizer {
 
-  def drawWithPath[T <: Visualizable](using v1: Visualizer[T])
-                                     (pane: Pane, top: T, links: List[T], topPos: Position, linksPos: List[Position]): Animation =
+  protected def drawWithPathWithOriginal[T <: Visualizable](using v1: Visualizer[T])
+                                                           (pane: Pane, top: T, links: List[T], topPos: Position, linksPos: List[Position]): Animation =
 
 
     val anim1 = v1.visualize(pane, top, topPos)
+    SequentialTransition(anim1, drawWithPathWithOriginal[T](pane, top, links, topPos, linksPos))
+
+  def drawWithPath[T <: Visualizable](using v1: Visualizer[T])
+                                     (pane: Pane, top: T, links: List[T], topPos: Position, linksPos: List[Position]): Animation =
 
     val shiftedTopPosition = Position(topPos.x, topPos.y + shiftFor(top))
-    val anim2 = ParallelTransition()
+    val anim1 = ParallelTransition()
     for (pos <- linksPos) {
-      anim2.getChildren.add(Visualizer.visualize[VisualizableLine](pane, (shiftedTopPosition, pos), topPos))
+      anim1.getChildren.add(Visualizer.visualize[VisualizableLine](pane, (shiftedTopPosition, pos), topPos))
     }
 
-    val anim3 = SequentialTransition()
+    val anim2 = SequentialTransition()
     for ((link, linkPos) <- links.zip(linksPos)) {
-      anim3.getChildren.add(v1.visualize(pane, link, linkPos))
+      anim2.getChildren.add(v1.visualize(pane, link, linkPos))
     }
 
-    val fullAnimation = SequentialTransition(anim1, anim2, anim3)
+    val fullAnimation = SequentialTransition(anim1, anim2)
     fullAnimation
 
   private def shiftFor(v: Visualizable): Int = v match {
