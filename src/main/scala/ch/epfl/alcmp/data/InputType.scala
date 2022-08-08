@@ -4,11 +4,6 @@ sealed trait InputType {
   def getType: TypeId
 }
 
-trait BinaryTree[T]
-case class Leaf[T]() extends BinaryTree[T]
-case class Node[T](value: T, left: BinaryTree[T], right: BinaryTree[T]) extends BinaryTree[T]
-
-
 case class IList(list: List[Int]) extends InputType {
   override def getType: TypeId = TypeId.ListType
 }

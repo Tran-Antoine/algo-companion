@@ -1,31 +1,30 @@
 package ch.epfl.alcmp.gui
 
-import javafx.animation.Transition
+import javafx.animation.{Animation, Transition}
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Line
 import javafx.util.Duration
 
-object PathVisualizer {
+object PathVisualizer extends Visualizer[VisualizableLine] {
 
-  def visualize(parent: Pane, a: (Int, Int), b: (Int, Int)): Line =
-    val line = Line(a._1, a._2, a._1, a._2)
-    line.setStrokeWidth(2.5)
+  override def visualize(parent: Pane, line: VisualizableLine, pos: Position): Animation =
+    val lineObj = Line(line.start.x, line.start.y, line.start.x, line.start.y)
+    lineObj.setStrokeWidth(2.5)
 
-    parent.getChildren.add(line)
+    parent.getChildren.add(lineObj)
 
     val animation = new Transition() {
       {
         setCycleDuration(Duration.millis(1000))
       }
       override def interpolate(frac: Double): Unit =
-        val vector = (b._1 - a._1, b._2 - a._2)
-        //val finalLength = Math.sqrt((b._2 - a._2)*(b._2 - a._2) + (b._2 - a._2) * (b._2 - a._2))
+        val vector = (line.end.x - line.start.x, line.end.y - line.start.y)
         val forward = (frac * vector._1, frac * vector._2)
 
-        line.setEndX(a._1 + forward._1)
-        line.setEndY(a._2 + forward._2)
+        lineObj.setEndX(line.start.x + forward._1)
+        lineObj.setEndY(line.start.y + forward._2)
     }
 
     animation.play()
-    line
+    animation
 }

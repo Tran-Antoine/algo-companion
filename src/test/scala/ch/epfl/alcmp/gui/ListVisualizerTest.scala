@@ -14,8 +14,6 @@ class ListVisualizerTest extends Scene {
     val button = Button("Next step")
     getChildren.add(button)
 
-
-
     val list = fill(List(1, 2, 3, 4))
     var i: Int = 0
 
@@ -25,7 +23,7 @@ class ListVisualizerTest extends Scene {
       (300, 350), (500, 350), (700, 350), (900, 350),
     )
     button.setOnAction(_ => {
-      ListVisualizer.visualize(pane, positions(i), list(i))
+      ListVisualizer.visualize(pane, list(i), Position(positions(i)))
       i += 1
     })
   }
