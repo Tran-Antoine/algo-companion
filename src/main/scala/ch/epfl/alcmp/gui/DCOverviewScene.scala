@@ -46,14 +46,16 @@ object DCOverviewScene extends Scene {
 
       recurrenceField.getStyleClass.removeAll("green-border", "orange-border", "red-border")
 
-      val result = RecurrenceCalculator.complexity(newValue)
+      if (newValue.nonEmpty) {
+        val result = RecurrenceCalculator.complexity(newValue.replaceAll("\\s", ""))
 
-      result match {
-        case None => recurrenceField.getStyleClass.add("red-border")
-        case Some(complexity, exact) =>
-          recurrenceField.getStyleClass.add(if exact then "green-border" else "orange-border")
-          val prefix = if exact then "Θ" else "O"
-          recurrenceResultText.setText(s"$prefix($complexity)")
+        result match {
+          case None => recurrenceField.getStyleClass.add("red-border")
+          case Some(complexity, exact) =>
+            recurrenceField.getStyleClass.add(if exact then "green-border" else "orange-border")
+            val prefix = if exact then "Θ" else "O"
+            recurrenceResultText.setText(s"$prefix($complexity)")
+        }
       }
     })
 
