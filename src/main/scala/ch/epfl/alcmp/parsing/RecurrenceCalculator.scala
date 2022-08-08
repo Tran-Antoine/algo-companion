@@ -22,7 +22,7 @@ object RecurrenceCalculator {
         }
 
     def simplifyComplexity(list: List[OuterTerm]): ComplexityExpression =
-      var currentHighest = Polynomial('0', 0)
+      var currentHighest = Polynomial('0', -1)
       for (element <- list) {
         element match {
           case ComplexityExpression(p) =>
@@ -60,6 +60,7 @@ object RecurrenceCalculator {
       val degree = expression.inner.maxDegree
 
       if count == 0 then prettyPolynomial(variable, degree)
+      else if expression.inner.maxDegree == -1 then "1"
       else
         val divider = 1/fraction
         val logbA = Math.log(count) / Math.log(divider)
