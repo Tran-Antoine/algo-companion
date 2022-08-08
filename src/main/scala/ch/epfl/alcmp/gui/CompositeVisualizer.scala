@@ -13,10 +13,10 @@ object CompositeVisualizer {
 
     val anim1 = v1.visualize(pane, top, topPos)
 
-    val shiftedTopPosition = Position(topPos.x, topPos.y + 60)
+    val shiftedTopPosition = Position(topPos.x, topPos.y + shiftFor(top))
     val anim2 = ParallelTransition()
     for (pos <- linksPos) {
-      anim2.getChildren.add(PathVisualizer.visualize(pane, (shiftedTopPosition, pos), topPos))
+      anim2.getChildren.add(Visualizer.visualize[VisualizableLine](pane, (shiftedTopPosition, pos), topPos))
     }
 
     val anim3 = SequentialTransition()
@@ -26,4 +26,10 @@ object CompositeVisualizer {
 
     val fullAnimation = SequentialTransition(anim1, anim2, anim3)
     fullAnimation
+
+  private def shiftFor(v: Visualizable): Int = v match {
+    case VisualizableList(_) => 60
+    case VisualizableLine(_, _) => 0
+    case _ => 0
+  }
 }

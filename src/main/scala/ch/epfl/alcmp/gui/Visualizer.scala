@@ -4,8 +4,17 @@ import javafx.animation.Animation
 import javafx.scene.layout.Pane
 import javafx.scene.Node
 
-trait Visualizer[T] {
+trait Visualizer[T <: Visualizable] {
   def visualize(parent: Pane, obj: T, pos: Position): Animation
+}
+
+object Visualizer {
+
+  given Visualizer[VisualizableList] = ListVisualizer
+  given Visualizer[VisualizableLine] = PathVisualizer
+
+  def visualize[T <: Visualizable](using v: Visualizer[T])(parent: Pane, obj: T, pos: Position): Animation =
+    v.visualize(parent, obj, pos)
 }
 
 opaque type Position = (Int, Int)
