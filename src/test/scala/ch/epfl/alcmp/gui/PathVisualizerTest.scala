@@ -15,7 +15,7 @@ class PathVisualizerTest extends Scene {
 
 
     button.setOnAction(_ => {
-      PathVisualizer.visualize(pane, (300, 400), (700, 200))
+      PathVisualizer.visualize(pane, (Position(300, 400), Position(700, 200)), Position.NULL)
     })
   }
 }

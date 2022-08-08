@@ -3,19 +3,20 @@ package ch.epfl.alcmp.gui
 import javafx.animation.Animation
 import javafx.animation.FadeTransition
 import javafx.geometry.Pos
+import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.layout.{HBox, Pane}
 import javafx.scene.paint.Color
 import javafx.scene.shape.{Circle, Rectangle}
 import javafx.util.Duration
 
-object ListVisualizer {
+object ListVisualizer extends Visualizer[VisualizableList] {
 
   private val SPACING = 4
   private val ORIGIN_SHIFT = 10
   private val SIZE = 30
 
-  def visualize(parent: Pane, pos: (Int, Int), list: List[Int]): Pane =
+  override def visualize(parent: Pane, vlist: VisualizableList, pos: Position): Animation =
 
     val pane = Pane()
     pane.getStylesheets.add("css/vis-list.css")
@@ -25,6 +26,7 @@ object ListVisualizer {
 
     var numberIndex = 0
 
+    val list = vlist.list
     for (number <- list) {
       val element = Label(number.toString)
       element.setPrefSize(SIZE, SIZE)
@@ -40,7 +42,7 @@ object ListVisualizer {
     }
 
     parent.getChildren.add(pane)
-    pane.relocate(pos._1, pos._2)
+    pane.relocate(pos.x, pos.y)
 
     val ft: FadeTransition = FadeTransition(Duration.millis(1000), pane)
     ft.setFromValue(0.0)
@@ -48,5 +50,5 @@ object ListVisualizer {
     ft.setCycleCount(1)
     ft.play()
 
-    pane
+    ft
 }
