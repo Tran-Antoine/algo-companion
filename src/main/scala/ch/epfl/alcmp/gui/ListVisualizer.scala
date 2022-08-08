@@ -19,6 +19,7 @@ object ListVisualizer extends Visualizer[VisualizableList] {
   override def visualize(parent: Pane, vlist: VisualizableList, pos: Position): Animation =
 
     val pane = Pane()
+    pane.setOpacity(0)
     pane.getStylesheets.add("css/vis-list.css")
 
     /*val marker = Circle(5)
@@ -48,7 +49,6 @@ object ListVisualizer extends Visualizer[VisualizableList] {
     ft.setFromValue(0.0)
     ft.setToValue(1.0)
     ft.setCycleCount(1)
-    ft.play()
 
     ft
 }
