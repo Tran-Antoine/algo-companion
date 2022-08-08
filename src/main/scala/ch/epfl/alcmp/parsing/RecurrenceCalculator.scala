@@ -59,15 +59,20 @@ object RecurrenceCalculator {
 
       val degree = expression.inner.maxDegree
 
-      if count == 0 then if degree != 1 then s"$variable^$degree" else s"$variable"
+      if count == 0 then prettyPolynomial(variable, degree)
       else
         val divider = 1/fraction
         val logbA = Math.log(count) / Math.log(divider)
 
-        if degree < logbA      then if logbA  != 1 then s"$variable^$logbA"  else "n"
-        else if degree > logbA then if degree != 1 then s"$variable^$degree" else "n"
-        else if degree != 1    then s"$variable^${degree}log($variable)"     else s"${variable}log($variable)"
+        if degree < logbA      then prettyPolynomial(variable, logbA)
+        else if degree > logbA then prettyPolynomial(variable, degree)
+        else                   s"${prettyPolynomial(variable, degree)}log($variable)"
 
+    def prettyPolynomial(variable: Char, degree: Double): String = degree match {
+      case 0 => "1"
+      case 1 => variable.toString
+      case n => if n%1 == 0 then s"$variable^${n.intValue}" else s"$variable^$n"
+    }
 
     val parser = new RecurrenceParser()
     parser.parseAll[Equation](parser.equation, recurrence) match {
