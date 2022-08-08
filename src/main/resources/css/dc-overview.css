@@ -68,6 +68,10 @@
     -fx-border-color: #73D21A;
 }
 
+.orange-border {
+    -fx-border-color: #ef8813;
+}
+
 .red-border {
     -fx-border-color: red;
 }

@@ -49,7 +49,7 @@ object RecurrenceCalculator {
         for (call <- relevantList.tail) {
           count += call.outerFactor
           if (call.innerFactor != factor) {
-            factor = call.innerFactor.min(factor)
+            factor = call.innerFactor.max(factor)
             exact = false
           }
         }

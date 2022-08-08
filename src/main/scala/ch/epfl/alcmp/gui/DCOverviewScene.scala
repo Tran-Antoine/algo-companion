@@ -1,5 +1,6 @@
 package ch.epfl.alcmp.gui
 
+import ch.epfl.alcmp.parsing.RecurrenceCalculator
 import javafx.scene.control.{Button, Label, TextField}
 import javafx.scene.layout.{Background, Border, ColumnConstraints, GridPane, RowConstraints}
 import scalafx.application.Platform
@@ -40,6 +41,21 @@ object DCOverviewScene extends Scene {
     recurrenceField.getStyleClass.add("field-box")
     recurrenceField.setPrefWidth(350)
     recurrenceField.setPromptText("T(n) = 2T(n/2) + O(n)")
+
+    recurrenceField.textProperty().addListener((_, _, newValue) => {
+
+      recurrenceField.getStyleClass.removeAll("green-border", "orange-border", "red-border")
+
+      val result = RecurrenceCalculator.complexity(newValue)
+
+      result match {
+        case None => recurrenceField.getStyleClass.add("red-border")
+        case Some(complexity, exact) =>
+          recurrenceField.getStyleClass.add(if exact then "green-border" else "orange-border")
+          val prefix = if exact then "Θ" else "O"
+          recurrenceResultText.setText(s"$prefix($complexity)")
+      }
+    })
 
     val inputType = new Pane()
     val inputTypeText = new Label("Input type")
