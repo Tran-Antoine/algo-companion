@@ -72,7 +72,9 @@ object RecurrenceCalculator {
     def prettyPolynomial(variable: Char, degree: Double): String = degree match {
       case 0 => "1"
       case 1 => variable.toString
-      case n => if n%1 == 0 then s"$variable^${n.intValue}" else s"$variable^$n"
+      case n => if n%1 == 0 then s"$variable^${n.intValue}" else
+        val cut = BigDecimal(n).setScale(2, BigDecimal.RoundingMode.UP)
+        s"$variable^$cut"
     }
 
     val parser = new RecurrenceParser()

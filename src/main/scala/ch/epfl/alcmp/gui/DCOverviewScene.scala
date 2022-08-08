@@ -39,7 +39,7 @@ object DCOverviewScene extends Scene {
 
     val recurrenceField = new TextField()
     recurrenceField.getStyleClass.add("field-box")
-    recurrenceField.setPrefWidth(350)
+    recurrenceField.setPrefWidth(400)
     recurrenceField.setPromptText("T(n) = 2T(n/2) + O(n)")
 
     recurrenceField.textProperty().addListener((_, _, newValue) => {
