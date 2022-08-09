@@ -1,8 +1,8 @@
 package ch.epfl.alcmp.anim
 
 import ch.epfl.alcmp.data.{InputType, SimulationData}
-import ch.epfl.alcmp.gui.{CompositeVisualizer, ListVisualizer, Position, Visualizable, VisualizableList, Visualizer}
-import javafx.animation.Animation
+import ch.epfl.alcmp.gui.{CompositeVisualizer, ListVisualizer, PathVisualizer, Position, ScalaFXMain, Visualizable, VisualizableLine, VisualizableList, Visualizer}
+import javafx.animation.{Animation, ParallelTransition}
 import javafx.scene.layout.Pane
 
 import scala.collection.mutable
@@ -25,31 +25,38 @@ class LayeredAnimationCreator(data: SimulationData) {
 
     def computeAnimations: List[Animation] =
 
-      // TODO: fix this type problem
-      var orderedGroups: List[Animation] = List(ListVisualizer.visualize(pane, data.divisionValueAt(0, 0).asInstanceOf[VisualizableList], translatePosition(0, 0)))
+      var orderedAnimations: List[Animation] = List(
+        Visualizer.convert(data.divisionValueAt(0, 0))(pane, translatePosition(0,0)))
+      
       val queue = new mutable.ArrayDeque[(Int, Int)]()
 
       queue.addOne(0, 0)
 
       while queue.nonEmpty do {
+
         val head = queue.removeHead()
-        val headObject = data.divisionValueAt(head._1, head._2).asInstanceOf[VisualizableList]
         val children = getChildren(head)
 
-        val childrenObjects: List[VisualizableList] = children.map((d, i) => data.divisionValueAt(d, i).asInstanceOf[VisualizableList])
-        val childrenPositions = children.map((d, i) => translatePosition(d, i))
         val parentPosition = translatePosition(head)
 
-        val animation = CompositeVisualizer.drawWithPath[VisualizableList](pane, headObject, childrenObjects, parentPosition, childrenPositions)
+        val lineAnimations = children
+          .map(translatePosition)
+          .map(pos => PathVisualizer.visualize(pane, VisualizableLine(parentPosition, pos), Position.NULL))
 
+        val childrenAnimations: List[Animation] = children
+          .map((d, i) => (translatePosition(d, i), data.divisionValueAt(d, i)))
+          .map((pos, input) => Visualizer.convert(input)(pane, pos))
 
-        orderedGroups = orderedGroups :+ animation
+        orderedAnimations = orderedAnimations ++ List(ParallelTransition(lineAnimations), ParallelTransition(childrenAnimations))
         queue.addAll(children)
       }
-      orderedGroups
+      orderedAnimations
 
     def translatePosition(pos: (Int, Int)): Position =
-      ???
+      val depth = pos._1
+      val index = pos._2
+      val elementsCount = data.divisionRowAt(depth).size
+      Position((index * ScalaFXMain.WIDTH / elementsCount).intValue, (depth + 1) * 100)
 
     computeAnimations
 }

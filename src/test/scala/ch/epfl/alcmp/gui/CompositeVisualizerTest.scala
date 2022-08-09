@@ -22,7 +22,7 @@ class CompositeVisualizerTest extends Scene {
 
 
     button.setOnAction(_ => {
-      CompositeVisualizer.drawWithPath[VisualizableList](pane, top, links, topPos, linksPos).play()
+      CompositeVisualizer.drawWithPathWithOriginal[VisualizableList](pane, top, links, topPos, linksPos).play()
     })
   }
 }

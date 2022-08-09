@@ -7,17 +7,18 @@ import javafx.util.Duration
 
 object CompositeVisualizer {
 
-  protected def drawWithPathWithOriginal[T <: Visualizable](using v1: Visualizer[T])
+  def drawWithPathWithOriginal[T <: Visualizable](using v1: Visualizer[T])
                                                            (pane: Pane, top: T, links: List[T], topPos: Position, linksPos: List[Position]): Animation =
 
 
     val anim1 = v1.visualize(pane, top, topPos)
-    SequentialTransition(anim1, drawWithPathWithOriginal[T](pane, top, links, topPos, linksPos))
+    SequentialTransition(anim1, drawWithPath[T](pane, links, topPos, linksPos))
 
   def drawWithPath[T <: Visualizable](using v1: Visualizer[T])
-                                     (pane: Pane, top: T, links: List[T], topPos: Position, linksPos: List[Position]): Animation =
+                                     (pane: Pane, links: List[T], topPos: Position, linksPos: List[Position]): Animation =
 
-    val shiftedTopPosition = Position(topPos.x, topPos.y + shiftFor(top))
+    // TODO: have proper shift depending on type
+    val shiftedTopPosition = Position(topPos.x, topPos.y + 60)
     val anim1 = ParallelTransition()
     for (pos <- linksPos) {
       anim1.getChildren.add(Visualizer.visualize[VisualizableLine](pane, (shiftedTopPosition, pos), topPos))

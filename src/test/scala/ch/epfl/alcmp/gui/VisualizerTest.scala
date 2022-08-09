@@ -14,7 +14,7 @@ object VisualizerTest extends JFXApp3 {
       title = "Algo Companion"
       width = ScalaFXMain.WIDTH
       height = ScalaFXMain.HEIGHT
-      scene = CompositeVisualizerTest()
+      scene = LayeredAnimationTest()
       icons.add(new Image(ScalaFXMain.getClass.getResourceAsStream("/logo.png")))
     }
   }
