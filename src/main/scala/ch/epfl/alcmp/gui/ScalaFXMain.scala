@@ -13,7 +13,7 @@ object ScalaFXMain extends JFXApp3 {
       title = "Algo Companion"
       width = ScalaFXMain.WIDTH
       height = ScalaFXMain.HEIGHT
-      scene = DCOverviewScene
+      scene = SimulationScene
       icons.add(new Image(ScalaFXMain.getClass.getResourceAsStream("/logo.png")))
     }
   }

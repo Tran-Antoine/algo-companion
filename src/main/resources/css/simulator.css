@@ -1,0 +1,28 @@
+.title-text {
+    -fx-pref-height: 100px;
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+    -fx-font-size: 40pt;
+    -fx-font-family: "Agency FB";
+}
+
+.simulation-button {
+    -fx-pref-height: 100px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.simulation-buttons {
+    -fx-pref-height: 100px;
+}
+
+.simulation-pane {
+    -fx-border-color: black;
+}
+
+.main-pane {
+    -fx-padding: 80px;
+    -fx-spacing: 10px;
+    -fx-alignment: top-center;
+    -fx-background-color: #DFEAF6;
+}
