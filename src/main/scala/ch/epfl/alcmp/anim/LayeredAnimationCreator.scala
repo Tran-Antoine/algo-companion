@@ -14,14 +14,17 @@ class LayeredAnimationCreator(data: SimulationData) {
     def getChildren(pos: (Int, Int)): List[(Int, Int)] =
       val depth = pos._1
       val index = pos._2
-      val skips = index - 1
+      val skips = index
       var subLayerIndex = 0
-      for (_ <- 0 until skips) {
-        subLayerIndex += data.lengthAt(depth + 1, subLayerIndex)
-      }
-      val childrenCount = data.lengthAt(depth + 1, subLayerIndex)
 
-      (0 until childrenCount).map(i => (depth + 1, subLayerIndex + i)).toList
+      if depth >= data.maxDepth then Nil
+      else
+        for (_ <- 0 until skips) {
+          subLayerIndex += data.lengthAt(depth + 1, subLayerIndex)
+        }
+        val childrenCount = data.lengthAt(depth + 1, subLayerIndex)
+
+        (0 until childrenCount).map(i => (depth + 1, subLayerIndex + i)).toList
 
     def computeAnimations: List[Animation] =
 
@@ -37,18 +40,21 @@ class LayeredAnimationCreator(data: SimulationData) {
         val head = queue.removeHead()
         val children = getChildren(head)
 
-        val parentPosition = translatePosition(head)
+        if (children.nonEmpty) {
+          val parentPosition = translatePosition(head).addY(30)
 
-        val lineAnimations = children
-          .map(translatePosition)
-          .map(pos => PathVisualizer.visualize(pane, VisualizableLine(parentPosition, pos), Position.NULL))
+          val lineAnimations = children
+            .map(translatePosition)
+            .map(_.addY(-30))
+            .map(pos => PathVisualizer.visualize(pane, VisualizableLine(parentPosition, pos), Position.NULL))
 
-        val childrenAnimations: List[Animation] = children
-          .map((d, i) => (translatePosition(d, i), data.divisionValueAt(d, i)))
-          .map((pos, input) => Visualizer.convert(input)(pane, pos))
+          val childrenAnimations: List[Animation] = children
+            .map((d, i) => (translatePosition(d, i), data.divisionValueAt(d, i)))
+            .map((pos, input) => Visualizer.convert(input)(pane, pos))
 
-        orderedAnimations = orderedAnimations ++ List(ParallelTransition(lineAnimations), ParallelTransition(childrenAnimations))
-        queue.addAll(children)
+          orderedAnimations = orderedAnimations ++ List(parallel(lineAnimations), parallel(childrenAnimations))
+          queue.addAll(children)
+        }
       }
       orderedAnimations
 
@@ -56,8 +62,31 @@ class LayeredAnimationCreator(data: SimulationData) {
       val depth = pos._1
       val index = pos._2
       val elementsCount = data.divisionRowAt(depth).size
-      Position((index * ScalaFXMain.WIDTH / elementsCount).intValue, (depth + 1) * 100)
+
+      val xFactor = Math.min((ScalaFXMain.WIDTH * 0.9) / data.maxDepth, 400) // i knew i had the x factor
+
+      val currentLineWidth = depth * xFactor
+
+      val startLine = (ScalaFXMain.WIDTH - currentLineWidth) / 2
+      val endLine   = (ScalaFXMain.WIDTH + currentLineWidth) / 2
+
+
+
+      val spacing = if elementsCount == 1 then 0 else (endLine - startLine) / (elementsCount - 1)
+
+      val posX = startLine + index * spacing
+
+      val yFactor = (ScalaFXMain.HEIGHT * 0.4) / (data.maxDepth + 1)
+      Position(posX.intValue, 50 + (depth * yFactor).intValue)
 
     computeAnimations
+
+
+  private def parallel(list: List[Animation]): ParallelTransition =
+    val transition = ParallelTransition()
+    for (elem <- list) {
+      transition.getChildren.add(elem)
+    }
+    transition
 }
 

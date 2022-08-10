@@ -13,7 +13,7 @@ import javafx.util.Duration
 object ListVisualizer extends Visualizer[VisualizableList] {
 
   private val SPACING = 4
-  private val ORIGIN_SHIFT = 10
+  private val ORIGIN_SHIFT = 20
   private val SIZE = 30
 
   override def visualize(parent: Pane, vlist: VisualizableList, pos: Position): Animation =
@@ -33,7 +33,7 @@ object ListVisualizer extends Visualizer[VisualizableList] {
       numberIndex += 1
 
       element.setTranslateX(xShift)
-      element.setTranslateY(ORIGIN_SHIFT)
+      element.setTranslateY(-SIZE/2)
 
       element.getStyleClass.add("number")
       pane.getChildren.add(element)

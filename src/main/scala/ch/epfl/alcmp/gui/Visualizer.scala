@@ -33,6 +33,10 @@ object Position {
   extension (pos: Position) {
     def x: Int = pos._1
     def y: Int = pos._2
+
+    def addX(v: Int): Position = (x+v, y)
+    def addY(v: Int): Position = (x, y+v)
   }
+
   def apply(pos: (Int, Int)): Position = pos
 }
