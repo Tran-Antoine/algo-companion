@@ -8,7 +8,7 @@ import scalafx.scene.Scene
 
 object SimulationScene extends Scene {
 
-  private val mainPane = VBox()
+  private val mainPane = HBox()
 
   private val previousScreen = Button("Previous")
 
@@ -40,17 +40,21 @@ object SimulationScene extends Scene {
 
     val title = Label("Simulator")
     title.getStyleClass.add("title-text")
-    title.setPrefWidth(ScalaFXMain.WIDTH)
-    mainPane.getChildren.add(title)
 
-    val simulationPane = createSimulationPane()
     val menuPane = createMenuPane()
-    val center = HBox(menuPane, simulationPane)
-    center.getStyleClass.add("center-pane")
-    mainPane.getChildren.add(center)
+    val simulationPane = createSimulationPane()
 
     previousScreen.getStyleClass.add("prev-button")
-    mainPane.getChildren.add(previousScreen)
+
+    val intermediatePane = VBox(title, menuPane)
+    intermediatePane.getStyleClass.add("center-pane")
+
+    val leftBox = VBox(intermediatePane, previousScreen)
+    leftBox.setPrefWidth(MENU_WIDTH)
+    leftBox.setSpacing(10)
+
+    mainPane.getChildren.add(leftBox)
+    mainPane.getChildren.add(simulationPane)
 
     mainPane.setPrefSize(ScalaFXMain.WIDTH, ScalaFXMain.HEIGHT) //Huh...?
     getChildren.add(mainPane)
@@ -62,6 +66,9 @@ object SimulationScene extends Scene {
     setupSimulationHandlers()
   }
 
+  /**
+   * Creates pane containing the menu buttons
+   */
   private def createMenuPane(): Node =
     inputDialog.setHeaderText(null)
     inputDialog.setTitle("Input")
@@ -87,6 +94,9 @@ object SimulationScene extends Scene {
       inputDialog.show()
     })
 
+  /**
+   * Creates pane containing the simulation and the simulation buttons
+   */
   private def createSimulationPane(): Node =
     val simulationPane = BorderPane()
 
