@@ -6,14 +6,35 @@
     -fx-font-family: "Agency FB";
 }
 
-.simulation-button {
-    -fx-pref-height: 100px;
-    -fx-alignment: center;
-    -fx-text-alignment: center;
+.menu-button {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 75px;
+    -fx-font-size: 20px;
+    -fx-font-family: "Cambria";
+    -fx-background-color: #EED6C7;
 }
 
-.simulation-buttons {
-    -fx-pref-height: 100px;
+.menu-button:hover {
+    -fx-background-color: #e79351;
+}
+
+.menu-pane {
+    -fx-spacing: 70px;
+    -fx-alignment: center;
+    -fx-padding: 15 0 15 0;
+}
+
+.simulation-button {
+    -fx-pref-height: 75px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-font-family: "Cambria";
+    -fx-font-size: 13pt;
+    -fx-background-color: #EED6C7;
+}
+
+.simulation-button:hover {
+    -fx-background-color: #e79351;
 }
 
 .simulation-pane {
@@ -22,7 +43,31 @@
 
 .main-pane {
     -fx-padding: 80px;
-    -fx-spacing: 10px;
-    -fx-alignment: top-center;
     -fx-background-color: #DFEAF6;
+    -fx-spacing: 10px;
+}
+
+.center-pane {
+    -fx-background-color: #EAEFF5;
+}
+
+.prev-button {
+    -fx-text-fill: #eee;
+    -fx-font-size: 20pt;
+    -fx-font-family: "Cambria";
+    -fx-background-color: #104B93;
+    -fx-pref-width: 200px;
+}
+
+.prev-button:hover {
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+}
+
+.dialog-pane {
+    -fx-background-color: #c41e1e;
+}
+
+.dialog-pane.label {
+    -fx-text-fill: #1e4896;
 }

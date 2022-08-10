@@ -66,7 +66,7 @@ object DCSpecs1Scene extends Scene {
     nextBox.getChildren.add(next)
 
     val hole = new Label() // i mean...
-    hole.setPrefWidth(800)
+    hole.setPrefWidth(640)
 
     val buttonsRow = HBox()
     buttonsRow.setPrefWidth(ScalaFXMain.WIDTH)
