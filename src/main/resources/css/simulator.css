@@ -19,7 +19,7 @@
 }
 
 .menu-pane {
-    -fx-spacing: 70px;
+    -fx-spacing: 60px;
     -fx-alignment: center;
     -fx-padding: 15 0 15 0;
 }
@@ -39,16 +39,18 @@
 
 .simulation-pane {
     -fx-border-color: black;
+    -fx-spacing: 12.5;
 }
 
 .main-pane {
     -fx-padding: 80px;
     -fx-background-color: #DFEAF6;
-    -fx-spacing: 10px;
 }
 
 .center-pane {
     -fx-background-color: #EAEFF5;
+    -fx-pref-height: 665px;
+    -fx-alignment: center;
 }
 
 .prev-button {
