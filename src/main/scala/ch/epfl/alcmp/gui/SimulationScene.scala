@@ -1,8 +1,9 @@
 package ch.epfl.alcmp.gui
 
 import javafx.scene.Node
-import javafx.scene.control.{Button, ButtonType, DialogPane, Label, PopupControl, TextArea, TextInputDialog}
-import javafx.scene.layout.{BorderPane, HBox, Pane, VBox}
+import javafx.scene.control.ButtonBar.ButtonData
+import javafx.scene.control.{Button, ButtonBar, ButtonType, DialogPane, Label, PopupControl, TextArea, TextInputDialog}
+import javafx.scene.layout.{Background, BorderPane, HBox, Pane, VBox}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 
@@ -76,7 +77,7 @@ object SimulationScene extends Scene {
     inputDialog.setGraphic(null)
     val pane = inputDialog.getDialogPane
     pane.getStylesheets.add("css/simulator.css")
-    pane.getButtonTypes.setAll(ButtonType("Ok"), ButtonType("Random"))
+    pane.getButtonTypes.setAll(ButtonType.OK, ButtonType("Random", ButtonBar.ButtonData.CANCEL_CLOSE))
     //Might be really useful! If only I could understand how all this works ...
 
     val menuPane = VBox()
@@ -91,7 +92,15 @@ object SimulationScene extends Scene {
 
   private def setupMenuHandlers(): Unit =
     inputButton.setOnAction(_ => {
-      inputDialog.show()
+      val javaOptional = inputDialog.showAndWait()
+      val userResponse = if javaOptional.isPresent then Some(javaOptional.get()) else None
+      userResponse match
+        case Some(response) =>
+          println("Your input was" + response)
+          //parse input
+        case None =>
+          println("Random input is being generated")
+          //generate random input
     })
 
   /**
@@ -103,8 +112,9 @@ object SimulationScene extends Scene {
     val buttons = HBox()
     List(beginning, previous, play, next, end).foreach(button => buttons.getChildren.add(setupSimulationButton(button)))
     simulationPane.setBottom(buttons)
+    buttons.getStyleClass.add("simulation-buttons")
 
-    val simulation = Pane() //I guess something else should go here
+    val simulation = Pane() //Just put the node that does the simulation in here I guess
     simulation.getStyleClass.add("simulation-pane")
     simulationPane.setCenter(simulation)
 
@@ -113,7 +123,7 @@ object SimulationScene extends Scene {
 
   private def setupSimulationButton(button: Button): Button =
     button.getStyleClass.add("simulation-button")
-    button.setPrefWidth(SIMULATION_WIDTH / NB_SIMULATION_BUTTONS)
+    button.setPrefWidth(SIMULATION_WIDTH / NB_SIMULATION_BUTTONS - 15)
     button
 
   private def setupSimulationHandlers(): Unit = {}
