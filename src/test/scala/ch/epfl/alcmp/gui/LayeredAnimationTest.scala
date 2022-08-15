@@ -23,7 +23,7 @@ class LayeredAnimationTest extends Scene {
 
     val l00 = IList(List(1, 2, 3, 4, 5, 6, 7, 8))
     val l10 = IList(List(1, 2, 3, 4))
-    val l11 = IList(List(3, 4, 5, 6))
+    val l11 = IList(List(5, 6, 7, 8))
     val l20 = IList(List(1, 2))
     val l21 = IList(List(3, 4))
     val l22 = IList(List(5, 6))
