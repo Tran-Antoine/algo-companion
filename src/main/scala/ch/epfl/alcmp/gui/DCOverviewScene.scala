@@ -15,6 +15,7 @@ import scalafx.geometry.Pos
 import javafx.geometry.HPos
 import javafx.geometry.VPos
 import javafx.scene.input.KeyCode
+import scalafx.scene.control.ComboBox
 
 object DCOverviewScene extends Scene {
 
@@ -65,21 +66,8 @@ object DCOverviewScene extends Scene {
     inputTypeText.setPrefSize(270, 70)
     inputType.getChildren.add(inputTypeText)
 
-    val inputTypeField = new TextField()
+    val inputTypeField = new ComboBox(List("List", "Matrix", "Heap", "BinaryTree"))
     inputTypeField.getStyleClass.add("field-box")
-    inputTypeField.setPromptText("List")
-    inputTypeField.textProperty().addListener((_, _, newValue) => {
-      val values = Set("List", "Matrix", "Heap", "BinaryTree")
-      inputTypeField.getStyleClass.removeAll("green-border", "red-border")
-
-      if(values.contains(newValue)) {
-        inputTypeField.getStyleClass.add("green-border")
-        inputTypeField.getStyleClass.remove("red-border")
-      } else if(newValue.nonEmpty) {
-        inputTypeField.getStyleClass.add("red-border")
-        inputTypeField.getStyleClass.remove("green-border")
-      }
-    })
 
     val grid = GridPane()
 
