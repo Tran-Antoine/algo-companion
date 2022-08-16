@@ -16,12 +16,16 @@ class SimulatorTest extends AnyFlatSpec with should.Matchers {
 
       simulator.makeDCScript(base, divide, combine)
 
-      assert(File("src/main/bin/DC_script.py").exists())
+      assert(File("src/main/bin/dc_script.py").exists())
     }
 
     "Copying matrix file to bin folder" should "work" in {
       simulator.copyToBin("/matrix.py")
 
       assert(File("src/main/bin/matrix.py").exists())
+    }
+
+    "Running python script" should "work" in {
+      simulator.runSimulator()
     }
 }
