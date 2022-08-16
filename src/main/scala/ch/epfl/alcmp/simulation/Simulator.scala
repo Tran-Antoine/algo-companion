@@ -2,7 +2,7 @@ package ch.epfl.alcmp.simulation
 
 import ch.epfl.alcmp.scripting.DCAssembler
 
-import java.io.{File, FileInputStream, FileOutputStream, FileReader, FileWriter, IOException}
+import java.io.{BufferedReader, File, FileInputStream, FileOutputStream, FileReader, FileWriter, IOException, InputStreamReader}
 import scala.io.Source
 
 class Simulator {
@@ -12,7 +12,7 @@ class Simulator {
 
   def makeDCScript(base: String, div: String, comb: String): Unit =
     val script = DCAssembler.assemble(base, div, comb)
-    val writer: FileWriter = new FileWriter(new File(BIN_FOLDER + "DC_script.py"))
+    val writer: FileWriter = new FileWriter(new File(BIN_FOLDER + "dc_script.py"))
     writer.write(script)
     writer.close()
 
@@ -25,5 +25,11 @@ class Simulator {
     inputChannel.close()
     outputChannel.close()
 
+  def runSimulator(): Unit =
+    copyToBin("simulator.py")
+    val process = ProcessBuilder("python", PYTHON_FOLDER + "simulator.py").start()
+    val reader = new BufferedReader(new InputStreamReader(process.getInputStream))
+    print(reader.readLine())
+    process.destroy()
 
 }
