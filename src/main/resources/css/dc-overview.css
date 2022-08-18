@@ -43,11 +43,14 @@
     -fx-alignment: center;
     -fx-font-size: 20pt;
     -fx-font-family: "Cambria";
+    -fx-pref-width: 400;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #C0C0C0;
+    -fx-border-radius: 2px;
 }
 
 .field-box:focused {
-    -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
-        linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
+    -fx-border-color: #888888;
 }
 
 .next-button {
