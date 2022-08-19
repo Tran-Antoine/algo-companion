@@ -6,9 +6,9 @@ import java.io.File
 
 class SimulatorTest extends AnyFlatSpec with should.Matchers {
 
-    "Running python script" should "work" ignore {
-      val simulator = new Simulator()
-      val process = simulator.runSimulator("", "", "", "", "", "")
-      simulator.stopSimulator(process)
-    }
+  "Running python script" should "work" ignore {
+    val simulator = new Simulator()
+    val process = simulator.runSimulator("", "", "", "", "", "")
+    simulator.stopSimulator(process)
+  }
 }
