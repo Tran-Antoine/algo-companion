@@ -50,7 +50,7 @@
 }
 
 .field-box:focused {
-    -fx-border-color: #888888;
+    -fx-border-width: 2px;
 }
 
 .next-button {
