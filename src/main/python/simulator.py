@@ -21,7 +21,7 @@ def main():
 
     sender.bind(("localhost", port))
 
-    for (i, arg) in enumerate(sys.argv[3]):
+    for (i, arg) in enumerate(sys.argv[3].split(',')):
         run(arg, sender, DivideSerde, CombineSerde, input_serde, i)
 
 
