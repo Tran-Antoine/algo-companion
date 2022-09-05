@@ -19,7 +19,7 @@ def main():
     sender = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     port = int(sys.argv[2])
 
-    sender.bind(("localhost", port))
+    sender.connect(("localhost", port))
 
     for (i, arg) in enumerate(sys.argv[3].split(',')):
         run(arg, sender, DivideSerde, CombineSerde, input_serde, i)
