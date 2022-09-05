@@ -7,8 +7,10 @@ import ch.epfl.alcmp.scripting.DCAssembler
 
 import java.io.{BufferedReader, File, FileInputStream, FileOutputStream, FileReader, FileWriter, IOException, InputStreamReader}
 import java.net.{ServerSocket, Socket}
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.io.Source
+import scala.util.{Failure, Success}
 
 class Simulator {
 
@@ -31,27 +33,35 @@ class Simulator {
     outputChannel.close()
 
   private def getType(type_id: String): TypeId =
-    if type_id == "ListType"       then return TypeId.ListType
-    if type_id == "MatrixType"     then return TypeId.MatrixType
-    if type_id == "BinaryTreeType" then return TypeId.BinaryTreeType
-    if type_id == "HeapType"       then return TypeId.HeapType
-    else throw new IllegalArgumentException
+    type_id match
+      case "ListType" => TypeId.ListType
+      case "MatrixType" => TypeId.MatrixType
+      case "BinaryTreeType" => TypeId.BinaryTreeType
+      case "HeapType" => TypeId.HeapType
+      case _ => throw new IllegalArgumentException
 
-  
+
+  //returns process that needs to be destroyed buy caller of function
   def runSimulator(base: String, div: String, comb: String,
-                   typeId: String, port: String, dc_arg: String): Process =
+                   typeId: String, dc_arg: String): Future[List[SimulationData]] =
+
     makeDCScript(base, div, comb)
     copyToBin("simulator.py")
     copyToBin("serde.py")
-    copyToBin("matrix.py") //TODO how to know when to copy this
+    val IdType = getType(typeId)
+    if(IdType == TypeId.MatrixType) copyToBin("matrix.py")
 
-    val server = ServerSocket(port.toInt)
-    val listener = new SimulationListener(new Socket("localhost", port.toInt), getType(typeId))
-    val sender = server.accept()
+    //val server = ServerSocket(7777)
+    val socket = Socket("localhost", 7777)
+    val listener = new SimulationListener(socket, IdType)
+
+    val process = ProcessBuilder("python", BIN_FOLDER+"simulator.py", typeId, "7777", dc_arg).start()
     val task: Future[List[SimulationData]] = listener.run()
-    print(task)
 
-    val process = ProcessBuilder("python", PYTHON_FOLDER+"simulator.py", typeId, port, dc_arg).start()
-    process
+    val reader = new BufferedReader(new InputStreamReader(process.getInputStream))
+    val output = reader.readLine()
+    println(output)
+
+    task
 
 }
