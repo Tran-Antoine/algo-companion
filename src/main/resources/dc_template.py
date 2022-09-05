@@ -8,7 +8,7 @@ def run(arg, socket, div_ser, comb_ser, input_serde, input_id, depth=0):
     """
     if depth == 0:
         run.maxIndices = {0: 0} # reset dictionary
-        socket.send(b"REGISTER {input_id}")
+        socket.send(bytes("REGISTER %s" % input_id, 'utf-8'))
         
     n = len(arg)
     
