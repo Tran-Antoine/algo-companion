@@ -2,7 +2,10 @@ package ch.epfl.alcmp.simulation
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import java.io.File
+import scala.util.{Failure, Success}
 
 class SimulatorTest extends AnyFlatSpec with should.Matchers {
 
@@ -12,7 +15,10 @@ class SimulatorTest extends AnyFlatSpec with should.Matchers {
     val combine = "return [arg0[0]] if arg0[0] > arg1[0] else [arg1[0]]"
     val base = "if n == 1: return arg"
     val simulator = new Simulator()
-    val process = simulator.runSimulator(base, divide, combine, "ListType", "3999", input)
-    process.destroy()
+    val task = simulator.runSimulator(base, divide, combine, "ListType", input)
+    task.onComplete {
+      case Success(data) => println("we got data")
+      case Failure(t) => println(t)
+    }
   }
 }
