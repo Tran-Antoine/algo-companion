@@ -51,16 +51,17 @@ class Simulator {
     val IdType = getType(typeId)
     if(IdType == TypeId.MatrixType) copyToBin("matrix.py")
 
-    //val server = ServerSocket(7777)
-    val socket = Socket("localhost", 7777)
-    val listener = new SimulationListener(socket, IdType)
-
+    val server = ServerSocket(7777)
     val process = ProcessBuilder("python", BIN_FOLDER+"simulator.py", typeId, "7777", dc_arg).start()
+    val socket = server.accept()
+
+    val listener = new SimulationListener(socket, IdType)
     val task: Future[List[SimulationData]] = listener.run()
 
-    val reader = new BufferedReader(new InputStreamReader(process.getInputStream))
-    val output = reader.readLine()
-    println(output)
+    //for testing python file
+//    val reader = new BufferedReader(new InputStreamReader(process.getInputStream))
+//    val output = reader.readLine()
+//    println(output)
 
     task
 
